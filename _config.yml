@@ -105,5 +105,5 @@ theme: hiker
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repository: https://github.com/hechengdong1994/hechengdong1994.github.io.git
+  repository: git@github.com:hechengdong1994/hechengdong1994.github.io.git
   branch: gh-pages
