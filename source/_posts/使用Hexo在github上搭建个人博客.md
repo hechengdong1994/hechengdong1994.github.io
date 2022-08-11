@@ -138,7 +138,7 @@ layout: "tags"
 
 
 
-部署到github
+部署到github.io
 
 配置github page
 
@@ -148,13 +148,94 @@ https://hexo.io/zh-cn/docs/one-command-deployment
 
 修改deploy配置项并部署，访问github.io，与本地访问结果相同。
 
+使用github actions支持静态网页自动部署
 
+### 添加推送用的key
 
+在本地用git bash生成一堆新的密钥
 
+1. `ssh-keygen -f HEXO_DEPLOY_KEY -C "HEXO_DEPLOY_KEY"`
 
-主题选择
+在HEXO部署仓库，来到settings，打开Deploy keys，添加一个新的key，上传公钥，即刚生成的pub文件内容，名字为HEXO_DEPLOY_KEY_PUB
 
+在博客源码仓库，settings，secrets，actions，将私钥复制粘贴到这里面，名字为HEXO_DEPLOY_KEY_PRI，**记住这个secret的名字**
 
+### 配置Action
+
+这里可以在github上点击 `Action -> new workflow -> set up a workflow yourself`随便挑个模板将内容放进去，也可以在代码仓库中的`.github/workflow`添加一个`hexo-ci.yml`然后将以下内容放进该文件中。
+
+**记得把<>中的 `blog_source_branch`, `username`, `username@email.address`替换成你自己的**
+
+```yaml
+name: HEXO CI
+
+on:
+  push:
+    branches:
+    - <blog_source_branch>
+    
+jobs:
+  build:
+    name: A job to deploy blog.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true # Checkout private submodules(themes or something else).
+
+      # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12' #超过12的版本有几个warning，我不想处理
+      - name: Configuration environment
+        env:
+          # 定义了一个变量，对应secrets-actions里面配置的私钥的名字
+          HEXO_DEPLOY_KEY_PRI: ${{secrets.HEXO_DEPLOY_KEY_PRI}}
+        run: |
+          # 创建了一个ssh文件夹
+          mkdir -p ~/.ssh/
+          # 把key复制进去
+          echo "$HEXO_DEPLOY_KEY_PRI" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          # 配置git
+          git config --global user.name "<username>"
+          git config --global user.email "<username@email.address>"
+      - name: Install dependencies
+        run: |
+          # 安装hexo
+          npm i -g hexo-cli
+          npm i
+      - name: Deploy
+        run: |
+          hexo clean && hexo generate && hexo deploy
+```
+
+这样就会在每次push的时候触发这个Action，自己生成并部署hexo了~
+
+## 配置Hexo deploy
+
+打开代码仓库中的`_config.yml`
+
+将 git 存储库从 http 形式更改为 ssh 形式。
+
+发布部署文件的的分支应该仓库配置的分支一样
+
+```yml
+deploy:
+  type: git
+  repository: git@github.com:xxx/xxx.github.io.git
+  # example, https://github.com/hexojs/hexojs.github.io
+  branch: gh-pages
+```
+
+你已经完成了所有操作！推送一次看看效果吧。
 
 问题：
 
