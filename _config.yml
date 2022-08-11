@@ -8,7 +8,7 @@ subtitle: ''
 description: ''
 keywords:
 author: John Doe
-language: en
+language: zh-CN
 timezone: ''
 
 # URL
@@ -99,7 +99,9 @@ ignore:
 ## Themes: https://hexo.io/themes/
 # 默认主题
 #theme: landscape
-theme: hiker
+#theme: hiker
+# fluid主题配置，当前版本为release-1.9.2
+theme: fluid
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
