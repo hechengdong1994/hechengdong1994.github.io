@@ -1,10 +1,10 @@
 ---
 title: 使用Hexo在github上搭建个人博客
 date: 2022-08-10
-tags:
-- github
-- Hexo
-- blog
+tags: 
+  - github
+  - Hexo
+  - blog
 ---
 
 
@@ -95,7 +95,7 @@ permalink: :post_title/
 
 2）文章主题/关键词使用tags方式进行标记，一篇博客可以有多个tag
 
-3）文章分类使用categories方式组织，物理上使用文件夹划分，即文章根据分类来划分文件夹。对于博客来说，关键词才是体现内容的方式，分类只是一个粗略大类的划分。虽然技术上可以通过md中的Front-matter部分指定多个分类，但原则上不进行指定，一篇博客仅属于一个分类。
+3）博客逻辑上分类使用categories方式组织，物理上使用文件夹划分，即文章根据分类来划分文件夹。对于博客来说，关键词才是体现内容的方式，分类只是一个粗略大类的划分。虽然技术上可以通过md中的Front-matter部分指定多个分类，但原则上不进行指定，一篇博客仅属于一个分类。
 
 1）官方有一个hexo new post的命令可以使用模板生成md文件，但是由于我自己不想依赖hexo的功能，只是想用它来做系统搭建。因此，对于博客文档和资源文件夹的创建，我还是使用手工的方式来做。
 
@@ -109,10 +109,59 @@ post_asset_folder: true
 
 注：如果仅修改post_asset_folder配置，不修改permalink配置，则网页中的图片是无法正常解析的。可以从hexo g命令的结果中看到，图片文件被保存为“/日期/博客标题/图片文件名”，而静态页中的图片引用为“/博客标题/图片文件名”，因此解析不到。
 
+2）
 
+在博客中，使用Front-matter指定tags，能够在博客详情页中看到对应的展示。
+
+但是官方提供的例子中是没有展示主题页的，这个需要所使用的主题有支持才会展示。在原始主题下，如果手动打开页面会显示Cannot GET /tags/。这是因为这个页面本身不存在，因此首先需要生成这个页面，再由主题去解析展示。
+
+通过hexo new page tags。则source文件夹下会出现tags文件夹，其中包含一个index.md文件。修改该md文件，在Front-matter中增加
+
+```yml
+type: "tags"
+layout: "tags"
+```
+
+由于不同的主题对这个页面的处理的方式不同，有的是根据type，有的是根据layout，有的直接根据文件夹名称，所以我这边都加上了。
+
+同样tags的统计和词云的展示，则是由主题提供的。
+
+3）与tags的处理方式相同。
+
+不同点在于categories有对应的文件夹。
+
+
+
+主题选择
+
+更改主题，并按需配置调整
+
+
+
+部署到github
+
+配置github page
+
+https://hexo.io/zh-cn/docs/github-pages#%E7%A7%81%E6%9C%89-Repository
+
+https://hexo.io/zh-cn/docs/one-command-deployment
+
+修改deploy配置项并部署，访问github.io，与本地访问结果相同。
+
+
+
+
+
+主题选择
 
 
 
 问题：
 
 博客标题中不能出现html的url符号，在生成静态网页时会不正确
+
+
+
+https://www.githang.com/2018/12/22/hexo-new-post-path/
+
+https://github.com/iTimeTraveler/hexo-theme-hiker
