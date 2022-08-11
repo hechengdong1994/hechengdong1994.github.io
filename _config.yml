@@ -99,7 +99,6 @@ ignore:
 ## Themes: https://hexo.io/themes/
 # 默认主题
 #theme: landscape
-#theme: hiker
 # fluid主题配置，当前版本为release-1.9.2
 theme: fluid
 
