@@ -156,7 +156,7 @@ https://hexo.io/zh-cn/docs/one-command-deployment
 
 1. `ssh-keygen -f HEXO_DEPLOY_KEY -C "HEXO_DEPLOY_KEY"`
 
-在HEXO部署仓库，来到settings，打开Deploy keys，添加一个新的key，上传公钥，即刚生成的pub文件内容，名字为HEXO_DEPLOY_KEY_PUB
+在HEXO部署仓库，来到settings，打开Deploy keys，添加一个新的key，上传公钥，即刚生成的pub文件内容，名字为HEXO_DEPLOY_KEY_PUB，需要开启写权限。
 
 在博客源码仓库，settings，secrets，actions，将私钥复制粘贴到这里面，名字为HEXO_DEPLOY_KEY_PRI，**记住这个secret的名字**
 
