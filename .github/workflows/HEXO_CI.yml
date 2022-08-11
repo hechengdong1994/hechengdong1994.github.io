@@ -9,14 +9,12 @@ jobs:
   build:
     name: A job to deploy blog.
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true # Checkout private submodules(themes or something else).
+          # Checkout private submodules(themes or something else).
+          submodules: true 
 
       # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
       - name: Setup Node.js
