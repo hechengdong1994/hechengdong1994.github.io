@@ -3,13 +3,14 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: on the way of java
-subtitle: ''
-description: ''
-keywords:
-author: 
+title: 木木东东
+subtitle: The Starry Sky is The Eternal Yearning
+# description主要用于SEO，告诉搜索引擎一个关于您站点的简单描述，通常建议在其中包含您网站的关键词。
+description: java
+keywords: java
+author: He ChengDong
 language: zh-CN
-timezone: ''
+timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
