@@ -1,0 +1,180 @@
+开始执行.......
+0.877: [GC (Allocation Failure) 0.877: [DefNew: 1118528K->139776K(1258304K), 0.2188346 secs] 1118528K->248631K(4054528K), 0.2189624 secs] [Times: user=0.07 sys=0.15, real=0.22 secs] 
+1.453: [GC (Allocation Failure) 1.453: [DefNew: 1258304K->139776K(1258304K), 0.2718756 secs] 1367159K->391582K(4054528K), 0.2719628 secs] [Times: user=0.06 sys=0.20, real=0.27 secs] 
+2.206: [GC (Allocation Failure) 2.206: [DefNew: 1258304K->139775K(1258304K), 0.1746466 secs] 1510110K->550534K(4054528K), 0.1747006 secs] [Times: user=0.08 sys=0.10, real=0.17 secs] 
+2.870: [GC (Allocation Failure) 2.870: [DefNew: 1258303K->139775K(1258304K), 0.2326135 secs] 1669062K->706428K(4054528K), 0.2327242 secs] [Times: user=0.11 sys=0.13, real=0.23 secs] 
+3.491: [GC (Allocation Failure) 3.491: [DefNew: 1258303K->139776K(1258304K), 0.2233579 secs] 1824956K->867115K(4054528K), 0.2234382 secs] [Times: user=0.11 sys=0.11, real=0.22 secs] 
+4.065: [GC (Allocation Failure) 4.065: [DefNew: 1258304K->139775K(1258304K), 0.1538313 secs] 1985643K->1032172K(4054528K), 0.1538959 secs] [Times: user=0.09 sys=0.07, real=0.16 secs] 
+4.570: [GC (Allocation Failure) 4.570: [DefNew: 1258303K->139775K(1258304K), 0.1857068 secs] 2150700K->1190979K(4054528K), 0.1858518 secs] [Times: user=0.10 sys=0.10, real=0.18 secs] 
+执行结束。共生成对象次数:33786
+Heap
+ def new generation   total 1258304K, used 1258303K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K, 100% used [0x00000006c0000000, 0x0000000704450000, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554ff90, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1051203K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  37% used [0x0000000715550000, 0x00000007557e0fe8, 0x00000007557e1000, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.889: [GC (Allocation Failure) 0.889: [DefNew: 1118528K->139776K(1258304K), 0.2066413 secs] 1118528K->240924K(4054528K), 0.2067532 secs] [Times: user=0.08 sys=0.12, real=0.21 secs] 
+1.440: [GC (Allocation Failure) 1.440: [DefNew: 1258304K->139776K(1258304K), 0.2887025 secs] 1359452K->395681K(4054528K), 0.2887804 secs] [Times: user=0.09 sys=0.20, real=0.28 secs] 
+2.308: [GC (Allocation Failure) 2.308: [DefNew: 1258304K->139775K(1258304K), 0.1919194 secs] 1514209K->547462K(4054528K), 0.1920173 secs] [Times: user=0.08 sys=0.11, real=0.20 secs] 
+2.961: [GC (Allocation Failure) 2.962: [DefNew: 1258303K->139775K(1258304K), 0.2137827 secs] 1665990K->689228K(4054528K), 0.2139109 secs] [Times: user=0.11 sys=0.11, real=0.21 secs] 
+3.543: [GC (Allocation Failure) 3.543: [DefNew: 1258303K->139775K(1258304K), 0.2000740 secs] 1807756K->839914K(4054528K), 0.2001645 secs] [Times: user=0.10 sys=0.10, real=0.20 secs] 
+4.172: [GC (Allocation Failure) 4.172: [DefNew: 1258303K->139776K(1258304K), 0.1678502 secs] 1958442K->997094K(4054528K), 0.1679222 secs] [Times: user=0.09 sys=0.08, real=0.17 secs] 
+4.868: [GC (Allocation Failure) 4.868: [DefNew: 1258304K->139775K(1258304K), 0.1648842 secs] 2115622K->1148171K(4054528K), 0.1650375 secs] [Times: user=0.08 sys=0.08, real=0.17 secs] 
+执行结束。共生成对象次数:30327
+Heap
+ def new generation   total 1258304K, used 388171K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  22% used [0x00000006c0000000, 0x00000006cf292d38, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554fff0, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1008395K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  36% used [0x0000000715550000, 0x0000000752e12e70, 0x0000000752e13000, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.872: [GC (Allocation Failure) 0.872: [DefNew: 1118528K->139775K(1258304K), 0.2167617 secs] 1118528K->256938K(4054528K), 0.2168801 secs] [Times: user=0.07 sys=0.15, real=0.21 secs] 
+1.472: [GC (Allocation Failure) 1.472: [DefNew: 1258303K->139775K(1258304K), 0.3005373 secs] 1375466K->421192K(4054528K), 0.3006177 secs] [Times: user=0.08 sys=0.23, real=0.30 secs] 
+2.335: [GC (Allocation Failure) 2.335: [DefNew: 1258303K->139776K(1258304K), 0.1420752 secs] 1539720K->582863K(4054528K), 0.1421414 secs] [Times: user=0.07 sys=0.07, real=0.14 secs] 
+2.874: [GC (Allocation Failure) 2.874: [DefNew: 1258304K->139776K(1258304K), 0.1859211 secs] 1701391K->747491K(4054528K), 0.1859910 secs] [Times: user=0.09 sys=0.09, real=0.18 secs] 
+3.383: [GC (Allocation Failure) 3.383: [DefNew: 1258304K->139775K(1258304K), 0.1777045 secs] 1866019K->901634K(4054528K), 0.1777685 secs] [Times: user=0.08 sys=0.10, real=0.18 secs] 
+3.927: [GC (Allocation Failure) 3.928: [DefNew: 1258303K->139775K(1258304K), 0.1709518 secs] 2020162K->1042354K(4054528K), 0.1710648 secs] [Times: user=0.09 sys=0.08, real=0.17 secs] 
+4.457: [GC (Allocation Failure) 4.457: [DefNew: 1258303K->139775K(1258304K), 0.1802497 secs] 2160882K->1191365K(4054528K), 0.1804357 secs] [Times: user=0.11 sys=0.07, real=0.18 secs] 
+4.990: [GC (Allocation Failure) 4.990: [DefNew: 1258303K->139775K(1258304K), 0.1880991 secs] 2309893K->1344768K(4054528K), 0.1881860 secs] [Times: user=0.08 sys=0.10, real=0.18 secs] 
+执行结束。共生成对象次数:33878
+Heap
+ def new generation   total 1258304K, used 184797K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,   4% used [0x00000006c0000000, 0x00000006c2bf7720, 0x0000000704450000)
+  from space 139776K,  99% used [0x0000000704450000, 0x000000070cccfff0, 0x000000070ccd0000)
+  to   space 139776K,   0% used [0x000000070ccd0000, 0x000000070ccd0000, 0x0000000715550000)
+ tenured generation   total 2796224K, used 1204992K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  43% used [0x0000000715550000, 0x000000075ee100d8, 0x000000075ee10200, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.896: [GC (Allocation Failure) 0.896: [DefNew: 1118528K->139775K(1258304K), 0.2052179 secs] 1118528K->235663K(4054528K), 0.2053492 secs] [Times: user=0.06 sys=0.14, real=0.20 secs] 
+1.506: [GC (Allocation Failure) 1.506: [DefNew: 1258303K->139775K(1258304K), 0.3451044 secs] 1354191K->393410K(4054528K), 0.3451960 secs] [Times: user=0.09 sys=0.25, real=0.34 secs] 
+2.473: [GC (Allocation Failure) 2.473: [DefNew: 1258303K->139775K(1258304K), 0.1996607 secs] 1511938K->536021K(4054528K), 0.1997813 secs] [Times: user=0.07 sys=0.13, real=0.20 secs] 
+3.062: [GC (Allocation Failure) 3.062: [DefNew: 1258303K->139776K(1258304K), 0.1838822 secs] 1654549K->693716K(4054528K), 0.1839475 secs] [Times: user=0.09 sys=0.09, real=0.18 secs] 
+3.597: [GC (Allocation Failure) 3.597: [DefNew: 1258304K->139776K(1258304K), 0.3078639 secs] 1812244K->847233K(4054528K), 0.3079554 secs] [Times: user=0.06 sys=0.24, real=0.30 secs] 
+4.281: [GC (Allocation Failure) 4.282: [DefNew: 1258304K->139776K(1258304K), 0.2132518 secs] 1965761K->1000300K(4054528K), 0.2133728 secs] [Times: user=0.09 sys=0.12, real=0.21 secs] 
+4.863: [GC (Allocation Failure) 4.863: [DefNew: 1258304K->139775K(1258304K), 0.2133657 secs] 2118828K->1162363K(4054528K), 0.2134795 secs] [Times: user=0.08 sys=0.13, real=0.22 secs] 
+执行结束。共生成对象次数:29912
+Heap
+ def new generation   total 1258304K, used 297900K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  14% used [0x00000006c0000000, 0x00000006c9a6b210, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554fff8, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1022587K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  36% used [0x0000000715550000, 0x0000000753beec78, 0x0000000753beee00, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.879: [GC (Allocation Failure) 0.879: [DefNew: 1118528K->139776K(1258304K), 0.2016065 secs] 1118528K->248593K(4054528K), 0.2017245 secs] [Times: user=0.07 sys=0.13, real=0.21 secs] 
+1.439: [GC (Allocation Failure) 1.439: [DefNew: 1258304K->139776K(1258304K), 0.2653906 secs] 1367121K->395415K(4054528K), 0.2654856 secs] [Times: user=0.06 sys=0.20, real=0.27 secs] 
+2.290: [GC (Allocation Failure) 2.290: [DefNew: 1258304K->139776K(1258304K), 0.1790270 secs] 1513943K->562063K(4054528K), 0.1791191 secs] [Times: user=0.11 sys=0.08, real=0.17 secs] 
+2.912: [GC (Allocation Failure) 2.912: [DefNew: 1258304K->139775K(1258304K), 0.2379493 secs] 1680591K->717556K(4054528K), 0.2380483 secs] [Times: user=0.12 sys=0.12, real=0.24 secs] 
+3.540: [GC (Allocation Failure) 3.540: [DefNew: 1258303K->139775K(1258304K), 0.2219828 secs] 1836084K->876888K(4054528K), 0.2220637 secs] [Times: user=0.10 sys=0.12, real=0.22 secs] 
+4.133: [GC (Allocation Failure) 4.133: [DefNew: 1258303K->139775K(1258304K), 0.1699060 secs] 1995416K->1023861K(4054528K), 0.1699856 secs] [Times: user=0.08 sys=0.09, real=0.17 secs] 
+4.674: [GC (Allocation Failure) 4.674: [DefNew: 1258303K->139775K(1258304K), 0.1903931 secs] 2142389K->1186848K(4054528K), 0.1905276 secs] [Times: user=0.09 sys=0.09, real=0.19 secs] 
+执行结束。共生成对象次数:32419
+Heap
+ def new generation   total 1258304K, used 883855K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  66% used [0x00000006c0000000, 0x00000006ed6a3ed0, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554fff8, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1047072K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  37% used [0x0000000715550000, 0x00000007553d8190, 0x00000007553d8200, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.874: [GC (Allocation Failure) 0.874: [DefNew: 1118528K->139776K(1258304K), 0.1943188 secs] 1118528K->233623K(4054528K), 0.1944476 secs] [Times: user=0.06 sys=0.13, real=0.19 secs] 
+1.433: [GC (Allocation Failure) 1.434: [DefNew: 1258282K->139775K(1258304K), 0.2980508 secs] 1352130K->387785K(4054528K), 0.2981430 secs] [Times: user=0.07 sys=0.22, real=0.30 secs] 
+2.280: [GC (Allocation Failure) 2.280: [DefNew: 1258303K->139776K(1258304K), 0.1606945 secs] 1506313K->548950K(4054528K), 0.1607562 secs] [Times: user=0.08 sys=0.08, real=0.16 secs] 
+2.867: [GC (Allocation Failure) 2.867: [DefNew: 1258304K->139776K(1258304K), 0.2256380 secs] 1667478K->708214K(4054528K), 0.2257598 secs] [Times: user=0.10 sys=0.12, real=0.23 secs] 
+3.480: [GC (Allocation Failure) 3.480: [DefNew: 1258304K->139775K(1258304K), 0.2338210 secs] 1826742K->860553K(4054528K), 0.2339260 secs] [Times: user=0.10 sys=0.13, real=0.24 secs] 
+4.081: [GC (Allocation Failure) 4.081: [DefNew: 1258303K->139775K(1258304K), 0.1793610 secs] 1979081K->1008118K(4054528K), 0.1794471 secs] [Times: user=0.10 sys=0.08, real=0.18 secs] 
+4.616: [GC (Allocation Failure) 4.616: [DefNew: 1258303K->139775K(1258304K), 0.1904820 secs] 2126646K->1159857K(4054528K), 0.1906166 secs] [Times: user=0.09 sys=0.09, real=0.19 secs] 
+执行结束。共生成对象次数:33319
+Heap
+ def new generation   total 1258304K, used 1114625K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  87% used [0x00000006c0000000, 0x00000006fb8004f8, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554fff8, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1020081K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  36% used [0x0000000715550000, 0x000000075397c7e0, 0x000000075397c800, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.899: [GC (Allocation Failure) 0.899: [DefNew: 1118528K->139776K(1258304K), 0.1947387 secs] 1118528K->236967K(4054528K), 0.1948554 secs] [Times: user=0.07 sys=0.13, real=0.19 secs] 
+1.462: [GC (Allocation Failure) 1.462: [DefNew: 1258304K->139776K(1258304K), 0.2663743 secs] 1355495K->386435K(4054528K), 0.2664494 secs] [Times: user=0.08 sys=0.19, real=0.26 secs] 
+2.305: [GC (Allocation Failure) 2.305: [DefNew: 1258304K->139775K(1258304K), 0.2485945 secs] 1504963K->530777K(4054528K), 0.2487140 secs] [Times: user=0.07 sys=0.18, real=0.25 secs] 
+2.991: [GC (Allocation Failure) 2.991: [DefNew: 1258303K->139776K(1258304K), 0.2230196 secs] 1649305K->681225K(4054528K), 0.2231157 secs] [Times: user=0.11 sys=0.11, real=0.22 secs] 
+3.593: [GC (Allocation Failure) 3.593: [DefNew: 1258304K->139775K(1258304K), 0.2131455 secs] 1799753K->838706K(4054528K), 0.2132369 secs] [Times: user=0.12 sys=0.10, real=0.21 secs] 
+4.176: [GC (Allocation Failure) 4.176: [DefNew: 1258303K->139776K(1258304K), 0.1996899 secs] 1957234K->999532K(4054528K), 0.1997850 secs] [Times: user=0.11 sys=0.09, real=0.20 secs] 
+4.745: [GC (Allocation Failure) 4.745: [DefNew: 1258304K->139775K(1258304K), 0.1724062 secs] 2118060K->1144727K(4054528K), 0.1725521 secs] [Times: user=0.09 sys=0.08, real=0.17 secs] 
+执行结束。共生成对象次数:32083
+Heap
+ def new generation   total 1258304K, used 747782K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  54% used [0x00000006c0000000, 0x00000006e51c1bd8, 0x0000000704450000)
+  from space 139776K,  99% used [0x000000070ccd0000, 0x000000071554fff8, 0x0000000715550000)
+  to   space 139776K,   0% used [0x0000000704450000, 0x0000000704450000, 0x000000070ccd0000)
+ tenured generation   total 2796224K, used 1004951K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  35% used [0x0000000715550000, 0x0000000752ab5e50, 0x0000000752ab6000, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.895: [GC (Allocation Failure) 0.895: [DefNew: 1118528K->139776K(1258304K), 0.2040590 secs] 1118528K->243861K(4054528K), 0.2042131 secs] [Times: user=0.07 sys=0.14, real=0.21 secs] 
+1.567: [GC (Allocation Failure) 1.567: [DefNew: 1258304K->139776K(1258304K), 0.2338344 secs] 1362389K->394538K(4054528K), 0.2339100 secs] [Times: user=0.07 sys=0.16, real=0.24 secs] 
+3.275: [GC (Allocation Failure) 3.275: [DefNew: 1258304K->139775K(1258304K), 0.1917633 secs] 1513066K->538422K(4054528K), 0.1918419 secs] [Times: user=0.08 sys=0.11, real=0.19 secs] 
+3.815: [GC (Allocation Failure) 3.815: [DefNew: 1258303K->139775K(1258304K), 0.1676364 secs] 1656950K->691665K(4054528K), 0.1677196 secs] [Times: user=0.07 sys=0.09, real=0.17 secs] 
+4.342: [GC (Allocation Failure) 4.342: [DefNew: 1258303K->139775K(1258304K), 0.1557935 secs] 1810193K->835288K(4054528K), 0.1559381 secs] [Times: user=0.07 sys=0.08, real=0.16 secs] 
+4.865: [GC (Allocation Failure) 4.865: [DefNew: 1258303K->139775K(1258304K), 0.1452005 secs] 1953816K->986217K(4054528K), 0.1452813 secs] [Times: user=0.08 sys=0.07, real=0.15 secs] 
+执行结束。共生成对象次数:26738
+Heap
+ def new generation   total 1258304K, used 501433K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  32% used [0x00000006c0000000, 0x00000006d612e698, 0x0000000704450000)
+  from space 139776K,  99% used [0x0000000704450000, 0x000000070cccfff8, 0x000000070ccd0000)
+  to   space 139776K,   0% used [0x000000070ccd0000, 0x000000070ccd0000, 0x0000000715550000)
+ tenured generation   total 2796224K, used 846441K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  30% used [0x0000000715550000, 0x0000000748fea5c0, 0x0000000748fea600, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.850: [GC (Allocation Failure) 0.850: [DefNew: 1118528K->139776K(1258304K), 0.1432754 secs] 1118528K->241499K(4054528K), 0.1433564 secs] [Times: user=0.04 sys=0.10, real=0.14 secs] 
+1.343: [GC (Allocation Failure) 1.343: [DefNew: 1258304K->139775K(1258304K), 0.2420860 secs] 1360027K->399276K(4054528K), 0.2421579 secs] [Times: user=0.09 sys=0.16, real=0.24 secs] 
+2.087: [GC (Allocation Failure) 2.087: [DefNew: 1258303K->139776K(1258304K), 0.1449299 secs] 1517804K->560055K(4054528K), 0.1449998 secs] [Times: user=0.08 sys=0.06, real=0.15 secs] 
+2.667: [GC (Allocation Failure) 2.667: [DefNew: 1258304K->139775K(1258304K), 0.2056439 secs] 1678583K->710402K(4054528K), 0.2057153 secs] [Times: user=0.09 sys=0.11, real=0.21 secs] 
+3.260: [GC (Allocation Failure) 3.260: [DefNew: 1258303K->139775K(1258304K), 0.2014235 secs] 1828930K->866554K(4054528K), 0.2014980 secs] [Times: user=0.09 sys=0.11, real=0.20 secs] 
+3.821: [GC (Allocation Failure) 3.821: [DefNew: 1258303K->139776K(1258304K), 0.1680079 secs] 1985082K->1026799K(4054528K), 0.1680797 secs] [Times: user=0.07 sys=0.09, real=0.17 secs] 
+4.315: [GC (Allocation Failure) 4.315: [DefNew: 1258304K->139775K(1258304K), 0.1605492 secs] 2145327K->1178533K(4054528K), 0.1606217 secs] [Times: user=0.08 sys=0.08, real=0.16 secs] 
+5.092: [GC (Allocation Failure) 5.092: [DefNew: 1258303K->139775K(1258304K), 0.1725801 secs] 2297061K->1330650K(4054528K), 0.1726986 secs] [Times: user=0.08 sys=0.09, real=0.17 secs] 
+执行结束。共生成对象次数:33803
+Heap
+ def new generation   total 1258304K, used 184850K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,   4% used [0x00000006c0000000, 0x00000006c2c04ad8, 0x0000000704450000)
+  from space 139776K,  99% used [0x0000000704450000, 0x000000070cccfff0, 0x000000070ccd0000)
+  to   space 139776K,   0% used [0x000000070ccd0000, 0x000000070ccd0000, 0x0000000715550000)
+ tenured generation   total 2796224K, used 1190874K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  42% used [0x0000000715550000, 0x000000075e046b38, 0x000000075e046c00, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.882: [GC (Allocation Failure) 0.882: [DefNew: 1118528K->139775K(1258304K), 0.2018792 secs] 1118528K->242452K(4054528K), 0.2020011 secs] [Times: user=0.06 sys=0.13, real=0.20 secs] 
+1.448: [GC (Allocation Failure) 1.448: [DefNew: 1258303K->139775K(1258304K), 0.2996119 secs] 1360980K->399951K(4054528K), 0.2997342 secs] [Times: user=0.08 sys=0.23, real=0.30 secs] 
+2.342: [GC (Allocation Failure) 2.342: [DefNew: 1258303K->139775K(1258304K), 0.2873246 secs] 1518479K->558563K(4054528K), 0.2874242 secs] [Times: user=0.07 sys=0.22, real=0.29 secs] 
+3.095: [GC (Allocation Failure) 3.095: [DefNew: 1258303K->139775K(1258304K), 0.2152953 secs] 1677091K->707103K(4054528K), 0.2153874 secs] [Times: user=0.10 sys=0.12, real=0.22 secs] 
+3.888: [GC (Allocation Failure) 3.888: [DefNew: 1258303K->139775K(1258304K), 0.2039585 secs] 1825631K->861515K(4054528K), 0.2040740 secs] [Times: user=0.11 sys=0.10, real=0.21 secs] 
+4.561: [GC (Allocation Failure) 4.561: [DefNew: 1258303K->139775K(1258304K), 0.1484217 secs] 1980043K->1018993K(4054528K), 0.1486480 secs] [Times: user=0.07 sys=0.08, real=0.15 secs] 
+执行结束。共生成对象次数:28931
+Heap
+ def new generation   total 1258304K, used 1087965K [0x00000006c0000000, 0x0000000715550000, 0x0000000715550000)
+  eden space 1118528K,  84% used [0x00000006c0000000, 0x00000006f9df7698, 0x0000000704450000)
+  from space 139776K,  99% used [0x0000000704450000, 0x000000070cccfff0, 0x000000070ccd0000)
+  to   space 139776K,   0% used [0x000000070ccd0000, 0x000000070ccd0000, 0x0000000715550000)
+ tenured generation   total 2796224K, used 879217K [0x0000000715550000, 0x00000007c0000000, 0x00000007c0000000)
+   the space 2796224K,  31% used [0x0000000715550000, 0x000000074afec488, 0x000000074afec600, 0x00000007c0000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K

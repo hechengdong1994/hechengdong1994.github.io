@@ -1,0 +1,130 @@
+开始执行.......
+0.472: [GC (Allocation Failure) 0.472: [ParNew: 558700K->69887K(629120K), 0.0382030 secs] 558700K->146745K(2027264K), 0.0383441 secs] [Times: user=0.27 sys=0.23, real=0.04 secs] 
+0.677: [GC (Allocation Failure) 0.677: [ParNew: 629119K->69887K(629120K), 0.0403441 secs] 705977K->272669K(2027264K), 0.0404348 secs] [Times: user=0.27 sys=0.41, real=0.04 secs] 
+0.875: [GC (Allocation Failure) 0.875: [ParNew: 629119K->69887K(629120K), 0.1034981 secs] 831901K->396502K(2027264K), 0.1035931 secs] [Times: user=1.76 sys=0.08, real=0.11 secs] 
+执行结束。共生成对象次数:7695
+Heap
+ par new generation   total 629120K, used 448745K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  67% used [0x0000000080000000, 0x00000000971fa6f8, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9fd68, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 326615K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.493: [GC (Allocation Failure) 0.493: [ParNew: 559232K->69885K(629120K), 0.0367652 secs] 559232K->149765K(2027264K), 0.0369166 secs] [Times: user=0.23 sys=0.22, real=0.03 secs] 
+0.711: [GC (Allocation Failure) 0.711: [ParNew: 629117K->69887K(629120K), 0.0454605 secs] 708997K->277139K(2027264K), 0.0455537 secs] [Times: user=0.33 sys=0.45, real=0.04 secs] 
+0.917: [GC (Allocation Failure) 0.917: [ParNew: 629119K->69888K(629120K), 0.0891374 secs] 836371K->401551K(2027264K), 0.0891946 secs] [Times: user=1.53 sys=0.07, real=0.09 secs] 
+执行结束。共生成对象次数:7480
+Heap
+ par new generation   total 629120K, used 390765K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  57% used [0x0000000080000000, 0x000000009395b520, 0x00000000a2220000)
+  from space 69888K, 100% used [0x00000000a6660000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 331663K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.517: [GC (Allocation Failure) 0.517: [ParNew: 559232K->69887K(629120K), 0.0378941 secs] 559232K->150359K(2027264K), 0.0380687 secs] [Times: user=0.31 sys=0.25, real=0.04 secs] 
+0.726: [GC (Allocation Failure) 0.726: [ParNew: 629084K->69886K(629120K), 0.0426266 secs] 709556K->267416K(2027264K), 0.0427091 secs] [Times: user=0.35 sys=0.37, real=0.04 secs] 
+0.934: [GC (Allocation Failure) 0.934: [ParNew: 629118K->69887K(629120K), 0.0907764 secs] 826648K->384933K(2027264K), 0.0908883 secs] [Times: user=1.55 sys=0.07, real=0.09 secs] 
+执行结束。共生成对象次数:7582
+Heap
+ par new generation   total 629120K, used 401822K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  59% used [0x0000000080000000, 0x0000000094427bd8, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9ffa0, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 315045K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.520: [GC (Allocation Failure) 0.520: [ParNew: 559232K->69888K(629120K), 0.0361394 secs] 559232K->154142K(2027264K), 0.0363137 secs] [Times: user=0.27 sys=0.28, real=0.03 secs] 
+0.724: [GC (Allocation Failure) 0.724: [ParNew: 629120K->69888K(629120K), 0.0420025 secs] 713374K->278124K(2027264K), 0.0421201 secs] [Times: user=0.33 sys=0.38, real=0.04 secs] 
+0.927: [GC (Allocation Failure) 0.927: [ParNew: 629120K->69888K(629120K), 0.1067406 secs] 837356K->406630K(2027264K), 0.1068042 secs] [Times: user=1.83 sys=0.07, real=0.10 secs] 
+执行结束。共生成对象次数:7473
+Heap
+ par new generation   total 629120K, used 414781K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  61% used [0x0000000080000000, 0x00000000950cf5c8, 0x00000000a2220000)
+  from space 69888K, 100% used [0x00000000a6660000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 336742K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.520: [GC (Allocation Failure) 0.520: [ParNew: 559071K->69888K(629120K), 0.0362198 secs] 559071K->152516K(2027264K), 0.0363939 secs] [Times: user=0.28 sys=0.27, real=0.04 secs] 
+0.723: [GC (Allocation Failure) 0.723: [ParNew: 629120K->69888K(629120K), 0.0422240 secs] 711748K->268527K(2027264K), 0.0423009 secs] [Times: user=0.35 sys=0.34, real=0.04 secs] 
+0.930: [GC (Allocation Failure) 0.930: [ParNew: 629120K->69887K(629120K), 0.1303556 secs] 827759K->395191K(2027264K), 0.1304500 secs] [Times: user=2.24 sys=0.10, real=0.13 secs] 
+执行结束。共生成对象次数:6897
+Heap
+ par new generation   total 629120K, used 242897K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  30% used [0x0000000080000000, 0x000000008a8f4798, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9fd18, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 325304K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.517: [GC (Allocation Failure) 0.517: [ParNew: 559232K->69888K(629120K), 0.0376470 secs] 559232K->147908K(2027264K), 0.0378435 secs] [Times: user=0.29 sys=0.29, real=0.04 secs] 
+0.727: [GC (Allocation Failure) 0.727: [ParNew: 629120K->69887K(629120K), 0.0447871 secs] 707140K->274715K(2027264K), 0.0448721 secs] [Times: user=0.38 sys=0.36, real=0.04 secs] 
+0.940: [GC (Allocation Failure) 0.940: [ParNew: 629119K->69887K(629120K), 0.0897049 secs] 833947K->386828K(2027264K), 0.0897858 secs] [Times: user=1.53 sys=0.07, real=0.09 secs] 
+执行结束。共生成对象次数:7405
+Heap
+ par new generation   total 629120K, used 401155K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  59% used [0x0000000080000000, 0x0000000094380e28, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9ffa0, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 316940K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.510: [GC (Allocation Failure) 0.510: [ParNew: 559232K->69887K(629120K), 0.0374745 secs] 559232K->152380K(2027264K), 0.0376628 secs] [Times: user=0.26 sys=0.25, real=0.04 secs] 
+0.720: [GC (Allocation Failure) 0.720: [ParNew: 629119K->69888K(629120K), 0.0469469 secs] 711612K->281592K(2027264K), 0.0470643 secs] [Times: user=0.37 sys=0.38, real=0.05 secs] 
+0.931: [GC (Allocation Failure) 0.931: [ParNew: 629120K->69887K(629120K), 0.1385526 secs] 840824K->404352K(2027264K), 0.1386483 secs] [Times: user=2.37 sys=0.11, real=0.14 secs] 
+执行结束。共生成对象次数:6963
+Heap
+ par new generation   total 629120K, used 255843K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  33% used [0x0000000080000000, 0x000000008b598d70, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9ff50, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 334464K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.488: [GC (Allocation Failure) 0.488: [ParNew: 559232K->69888K(629120K), 0.0381698 secs] 559232K->150215K(2027264K), 0.0382925 secs] [Times: user=0.22 sys=0.38, real=0.04 secs] 
+0.688: [GC (Allocation Failure) 0.688: [ParNew: 629120K->69886K(629120K), 0.0494360 secs] 709447K->280417K(2027264K), 0.0495081 secs] [Times: user=0.34 sys=0.50, real=0.05 secs] 
+0.899: [GC (Allocation Failure) 0.899: [ParNew: 629118K->69887K(629120K), 0.0945245 secs] 839649K->392880K(2027264K), 0.0946235 secs] [Times: user=1.62 sys=0.07, real=0.09 secs] 
+执行结束。共生成对象次数:7810
+Heap
+ par new generation   total 629120K, used 458509K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  69% used [0x0000000080000000, 0x0000000097b83850, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9fc68, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 322993K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.538: [GC (Allocation Failure) 0.538: [ParNew: 559232K->69888K(629120K), 0.0350556 secs] 559232K->152257K(2027264K), 0.0351980 secs] [Times: user=0.26 sys=0.28, real=0.04 secs] 
+0.739: [GC (Allocation Failure) 0.739: [ParNew: 629120K->69887K(629120K), 0.0473131 secs] 711489K->286603K(2027264K), 0.0474118 secs] [Times: user=0.34 sys=0.44, real=0.05 secs] 
+0.949: [GC (Allocation Failure) 0.949: [ParNew: 629119K->69886K(629120K), 0.1023631 secs] 845835K->407797K(2027264K), 0.1024487 secs] [Times: user=1.74 sys=0.08, real=0.11 secs] 
+执行结束。共生成对象次数:7163
+Heap
+ par new generation   total 629120K, used 341868K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  48% used [0x0000000080000000, 0x000000009099b828, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9fb90, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 337910K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.510: [GC (Allocation Failure) 0.510: [ParNew: 559232K->69888K(629120K), 0.0357753 secs] 559232K->144294K(2027264K), 0.0359472 secs] [Times: user=0.24 sys=0.23, real=0.03 secs] 
+0.711: [GC (Allocation Failure) 0.711: [ParNew: 629120K->69887K(629120K), 0.0444325 secs] 703526K->272421K(2027264K), 0.0445233 secs] [Times: user=0.32 sys=0.43, real=0.04 secs] 
+0.916: [GC (Allocation Failure) 0.916: [ParNew: 629119K->69887K(629120K), 0.1012890 secs] 831653K->405287K(2027264K), 0.1013893 secs] [Times: user=1.73 sys=0.07, real=0.11 secs] 
+执行结束。共生成对象次数:7664
+Heap
+ par new generation   total 629120K, used 447776K [0x0000000080000000, 0x00000000aaaa0000, 0x00000000aaaa0000)
+  eden space 559232K,  67% used [0x0000000080000000, 0x0000000097108338, 0x00000000a2220000)
+  from space 69888K,  99% used [0x00000000a6660000, 0x00000000aaa9ff98, 0x00000000aaaa0000)
+  to   space 69888K,   0% used [0x00000000a2220000, 0x00000000a2220000, 0x00000000a6660000)
+ concurrent mark-sweep generation total 1398144K, used 335399K [0x00000000aaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K

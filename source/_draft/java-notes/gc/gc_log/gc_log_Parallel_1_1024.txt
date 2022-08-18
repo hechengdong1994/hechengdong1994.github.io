@@ -1,0 +1,207 @@
+开始执行.......
+0.279: [GC (Allocation Failure) [PSYoungGen: 262144K->43519K(305664K)] 262144K->78817K(1005056K), 0.0183361 secs] [Times: user=0.08 sys=0.21, real=0.01 secs] 
+0.376: [GC (Allocation Failure) [PSYoungGen: 305663K->43508K(305664K)] 340961K->150257K(1005056K), 0.0233009 secs] [Times: user=0.13 sys=0.27, real=0.03 secs] 
+0.475: [GC (Allocation Failure) [PSYoungGen: 305652K->43511K(305664K)] 412401K->228956K(1005056K), 0.0257885 secs] [Times: user=0.27 sys=0.18, real=0.03 secs] 
+0.578: [GC (Allocation Failure) [PSYoungGen: 305655K->43517K(305664K)] 491100K->299206K(1005056K), 0.0243361 secs] [Times: user=0.25 sys=0.17, real=0.03 secs] 
+0.680: [GC (Allocation Failure) [PSYoungGen: 305661K->43519K(305664K)] 561350K->370775K(1005056K), 0.0239466 secs] [Times: user=0.23 sys=0.19, real=0.02 secs] 
+0.782: [GC (Allocation Failure) [PSYoungGen: 305663K->43509K(160256K)] 632919K->445477K(859648K), 0.0243491 secs] [Times: user=0.23 sys=0.19, real=0.02 secs] 
+0.843: [GC (Allocation Failure) [PSYoungGen: 160185K->70604K(232960K)] 562153K->476861K(932352K), 0.0272549 secs] [Times: user=0.44 sys=0.02, real=0.03 secs] 
+0.905: [GC (Allocation Failure) [PSYoungGen: 187340K->96789K(232960K)] 593597K->510585K(932352K), 0.0293859 secs] [Times: user=0.48 sys=0.03, real=0.03 secs] 
+0.971: [GC (Allocation Failure) [PSYoungGen: 213355K->106044K(232960K)] 627151K->538261K(932352K), 0.0398573 secs] [Times: user=0.62 sys=0.08, real=0.04 secs] 
+1.047: [GC (Allocation Failure) [PSYoungGen: 222780K->74155K(232960K)] 654997K->562653K(932352K), 0.0315408 secs] [Times: user=0.35 sys=0.20, real=0.04 secs] 
+执行结束。共生成对象次数:7641
+Heap
+ PSYoungGen      total 232960K, used 79364K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eb0164c8,0x00000000f1d00000)
+  from space 116224K, 63% used [0x00000000f8e80000,0x00000000fd6eac90,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 488498K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 69% used [0x00000000c0000000,0x00000000ddd0c978,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.309: [GC (Allocation Failure) [PSYoungGen: 262144K->43519K(305664K)] 262144K->85760K(1005056K), 0.0203818 secs] [Times: user=0.10 sys=0.22, real=0.02 secs] 
+0.407: [GC (Allocation Failure) [PSYoungGen: 305663K->43504K(305664K)] 347904K->161772K(1005056K), 0.0254773 secs] [Times: user=0.14 sys=0.30, real=0.02 secs] 
+0.506: [GC (Allocation Failure) [PSYoungGen: 305648K->43504K(305664K)] 423916K->235250K(1005056K), 0.0284985 secs] [Times: user=0.32 sys=0.17, real=0.02 secs] 
+0.609: [GC (Allocation Failure) [PSYoungGen: 305648K->43501K(305664K)] 497394K->303591K(1005056K), 0.0255153 secs] [Times: user=0.27 sys=0.17, real=0.02 secs] 
+0.706: [GC (Allocation Failure) [PSYoungGen: 305645K->43505K(305664K)] 565735K->375933K(1005056K), 0.0273569 secs] [Times: user=0.29 sys=0.18, real=0.02 secs] 
+0.812: [GC (Allocation Failure) [PSYoungGen: 305649K->43517K(160256K)] 638077K->453700K(859648K), 0.0279360 secs] [Times: user=0.30 sys=0.19, real=0.03 secs] 
+0.880: [GC (Allocation Failure) [PSYoungGen: 160253K->70843K(232960K)] 570436K->486809K(932352K), 0.0277548 secs] [Times: user=0.45 sys=0.03, real=0.03 secs] 
+0.942: [GC (Allocation Failure) [PSYoungGen: 187575K->96159K(232960K)] 603542K->518785K(932352K), 0.0330396 secs] [Times: user=0.56 sys=0.02, real=0.03 secs] 
+1.009: [GC (Allocation Failure) [PSYoungGen: 212895K->104800K(232960K)] 635521K->546060K(932352K), 0.0411157 secs] [Times: user=0.64 sys=0.08, real=0.04 secs] 
+1.085: [GC (Allocation Failure) [PSYoungGen: 221490K->72556K(232960K)] 662749K->575809K(932352K), 0.0347146 secs] [Times: user=0.38 sys=0.23, real=0.03 secs] 
+执行结束。共生成对象次数:7804
+Heap
+ PSYoungGen      total 232960K, used 77253K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eaf962e8,0x00000000f1d00000)
+  from space 116224K, 62% used [0x00000000f8e80000,0x00000000fd55b2c0,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 503252K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 71% used [0x00000000c0000000,0x00000000deb75350,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.319: [GC (Allocation Failure) [PSYoungGen: 262144K->43509K(305664K)] 262144K->83884K(1005056K), 0.0194009 secs] [Times: user=0.09 sys=0.22, real=0.02 secs] 
+0.420: [GC (Allocation Failure) [PSYoungGen: 305653K->43514K(305664K)] 346028K->156756K(1005056K), 0.0234907 secs] [Times: user=0.11 sys=0.30, real=0.02 secs] 
+0.517: [GC (Allocation Failure) [PSYoungGen: 305658K->43519K(305664K)] 418900K->231639K(1005056K), 0.0261365 secs] [Times: user=0.26 sys=0.19, real=0.02 secs] 
+0.619: [GC (Allocation Failure) [PSYoungGen: 305663K->43518K(305664K)] 493783K->307753K(1005056K), 0.0253925 secs] [Times: user=0.26 sys=0.17, real=0.03 secs] 
+0.722: [GC (Allocation Failure) [PSYoungGen: 305662K->43517K(305664K)] 569897K->381167K(1005056K), 0.0249081 secs] [Times: user=0.24 sys=0.18, real=0.03 secs] 
+0.821: [GC (Allocation Failure) [PSYoungGen: 305661K->43509K(160256K)] 643311K->453149K(859648K), 0.0241158 secs] [Times: user=0.24 sys=0.18, real=0.03 secs] 
+0.879: [GC (Allocation Failure) [PSYoungGen: 160245K->73778K(232960K)] 569885K->487710K(932352K), 0.0280552 secs] [Times: user=0.44 sys=0.02, real=0.03 secs] 
+0.944: [GC (Allocation Failure) [PSYoungGen: 189972K->96829K(232960K)] 603904K->519641K(932352K), 0.0300623 secs] [Times: user=0.49 sys=0.04, real=0.03 secs] 
+1.010: [GC (Allocation Failure) [PSYoungGen: 213565K->104730K(232960K)] 636377K->546437K(932352K), 0.0378723 secs] [Times: user=0.59 sys=0.07, real=0.04 secs] 
+1.081: [GC (Allocation Failure) [PSYoungGen: 221466K->75369K(232960K)] 663173K->578428K(932352K), 0.0341862 secs] [Times: user=0.40 sys=0.20, real=0.04 secs] 
+执行结束。共生成对象次数:7896
+Heap
+ PSYoungGen      total 232960K, used 99556K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 20% used [0x00000000eab00000,0x00000000ec29e9b0,0x00000000f1d00000)
+  from space 116224K, 64% used [0x00000000f8e80000,0x00000000fd81a7b8,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 503058K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 71% used [0x00000000c0000000,0x00000000deb44be0,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.309: [GC (Allocation Failure) [PSYoungGen: 262144K->43502K(305664K)] 262144K->81342K(1005056K), 0.0185008 secs] [Times: user=0.11 sys=0.16, real=0.02 secs] 
+0.407: [GC (Allocation Failure) [PSYoungGen: 305646K->43518K(305664K)] 343486K->159076K(1005056K), 0.0225678 secs] [Times: user=0.15 sys=0.23, real=0.02 secs] 
+0.508: [GC (Allocation Failure) [PSYoungGen: 305662K->43519K(305664K)] 421220K->231854K(1005056K), 0.0247133 secs] [Times: user=0.28 sys=0.14, real=0.03 secs] 
+0.610: [GC (Allocation Failure) [PSYoungGen: 305663K->43516K(305664K)] 493998K->314251K(1005056K), 0.0276083 secs] [Times: user=0.30 sys=0.18, real=0.03 secs] 
+0.715: [GC (Allocation Failure) [PSYoungGen: 305660K->43517K(305664K)] 576395K->382883K(1005056K), 0.0254991 secs] [Times: user=0.27 sys=0.16, real=0.02 secs] 
+0.818: [GC (Allocation Failure) [PSYoungGen: 305661K->43518K(160256K)] 645027K->455874K(859648K), 0.0242895 secs] [Times: user=0.27 sys=0.15, real=0.03 secs] 
+0.878: [GC (Allocation Failure) [PSYoungGen: 159692K->77320K(232960K)] 572048K->494580K(932352K), 0.0293257 secs] [Times: user=0.48 sys=0.03, real=0.03 secs] 
+0.943: [GC (Allocation Failure) [PSYoungGen: 194056K->97383K(232960K)] 611316K->527812K(932352K), 0.0290142 secs] [Times: user=0.46 sys=0.04, real=0.03 secs] 
+1.008: [GC (Allocation Failure) [PSYoungGen: 214119K->106649K(232960K)] 644548K->554367K(932352K), 0.0388880 secs] [Times: user=0.61 sys=0.07, real=0.04 secs] 
+1.082: [GC (Allocation Failure) [PSYoungGen: 223385K->73923K(232960K)] 671103K->584507K(932352K), 0.0328541 secs] [Times: user=0.35 sys=0.23, real=0.03 secs] 
+执行结束。共生成对象次数:7718
+Heap
+ PSYoungGen      total 232960K, used 78706K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eafaba80,0x00000000f1d00000)
+  from space 116224K, 63% used [0x00000000f8e80000,0x00000000fd6b0ef0,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 510584K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 73% used [0x00000000c0000000,0x00000000df29e050,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.309: [GC (Allocation Failure) [PSYoungGen: 262144K->43518K(305664K)] 262144K->72016K(1005056K), 0.0170253 secs] [Times: user=0.10 sys=0.18, real=0.02 secs] 
+0.408: [GC (Allocation Failure) [PSYoungGen: 305662K->43518K(305664K)] 334160K->143688K(1005056K), 0.0224918 secs] [Times: user=0.14 sys=0.24, real=0.03 secs] 
+0.509: [GC (Allocation Failure) [PSYoungGen: 305662K->43512K(305664K)] 405832K->222662K(1005056K), 0.0259458 secs] [Times: user=0.28 sys=0.17, real=0.03 secs] 
+0.614: [GC (Allocation Failure) [PSYoungGen: 305656K->43517K(305664K)] 484806K->297650K(1005056K), 0.0249175 secs] [Times: user=0.28 sys=0.15, real=0.02 secs] 
+0.718: [GC (Allocation Failure) [PSYoungGen: 305661K->43519K(305664K)] 559794K->366035K(1005056K), 0.0237950 secs] [Times: user=0.27 sys=0.14, real=0.03 secs] 
+0.821: [GC (Allocation Failure) [PSYoungGen: 305663K->43509K(160256K)] 628179K->438062K(859648K), 0.0240209 secs] [Times: user=0.27 sys=0.15, real=0.02 secs] 
+0.882: [GC (Allocation Failure) [PSYoungGen: 160007K->69396K(232960K)] 554560K->469707K(932352K), 0.0268032 secs] [Times: user=0.44 sys=0.02, real=0.02 secs] 
+0.943: [GC (Allocation Failure) [PSYoungGen: 186132K->99107K(232960K)] 586443K->507629K(932352K), 0.0308154 secs] [Times: user=0.51 sys=0.03, real=0.03 secs] 
+1.008: [GC (Allocation Failure) [PSYoungGen: 215843K->112553K(232960K)] 624365K->540248K(932352K), 0.0421869 secs] [Times: user=0.66 sys=0.08, real=0.04 secs] 
+1.085: [GC (Allocation Failure) [PSYoungGen: 229289K->80375K(232960K)] 656984K->569865K(932352K), 0.0354594 secs] [Times: user=0.39 sys=0.21, real=0.04 secs] 
+执行结束。共生成对象次数:7756
+Heap
+ PSYoungGen      total 232960K, used 85083K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eaf99008,0x00000000f1d00000)
+  from space 116224K, 69% used [0x00000000f8e80000,0x00000000fdcfdff0,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 489489K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 69% used [0x00000000c0000000,0x00000000dde04650,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.313: [GC (Allocation Failure) [PSYoungGen: 261732K->43505K(305664K)] 261732K->84806K(1005056K), 0.0194263 secs] [Times: user=0.12 sys=0.20, real=0.02 secs] 
+0.410: [GC (Allocation Failure) [PSYoungGen: 305649K->43519K(305664K)] 346950K->156111K(1005056K), 0.0215509 secs] [Times: user=0.13 sys=0.24, real=0.02 secs] 
+0.507: [GC (Allocation Failure) [PSYoungGen: 305663K->43513K(305664K)] 418255K->232223K(1005056K), 0.0256530 secs] [Times: user=0.28 sys=0.15, real=0.02 secs] 
+0.609: [GC (Allocation Failure) [PSYoungGen: 305657K->43519K(305664K)] 494367K->297655K(1005056K), 0.0222959 secs] [Times: user=0.24 sys=0.14, real=0.02 secs] 
+0.710: [GC (Allocation Failure) [PSYoungGen: 305663K->43513K(305664K)] 559799K->364749K(1005056K), 0.0227403 secs] [Times: user=0.25 sys=0.14, real=0.02 secs] 
+0.809: [GC (Allocation Failure) [PSYoungGen: 305657K->43513K(160256K)] 626893K->445119K(859648K), 0.0252084 secs] [Times: user=0.27 sys=0.16, real=0.03 secs] 
+0.868: [GC (Allocation Failure) [PSYoungGen: 159718K->72799K(232960K)] 561324K->477816K(932352K), 0.0277291 secs] [Times: user=0.47 sys=0.02, real=0.03 secs] 
+0.929: [GC (Allocation Failure) [PSYoungGen: 189535K->97850K(232960K)] 594552K->515189K(932352K), 0.0303099 secs] [Times: user=0.49 sys=0.04, real=0.03 secs] 
+0.996: [GC (Allocation Failure) [PSYoungGen: 214586K->109123K(232960K)] 631925K->544929K(932352K), 0.0406896 secs] [Times: user=0.61 sys=0.09, real=0.04 secs] 
+1.071: [GC (Allocation Failure) [PSYoungGen: 225859K->75967K(232960K)] 661665K->574042K(932352K), 0.0333370 secs] [Times: user=0.39 sys=0.19, real=0.04 secs] 
+执行结束。共生成对象次数:7823
+Heap
+ PSYoungGen      total 232960K, used 100976K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 21% used [0x00000000eab00000,0x00000000ec36c370,0x00000000f1d00000)
+  from space 116224K, 65% used [0x00000000f8e80000,0x00000000fd8afd30,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 498075K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 71% used [0x00000000c0000000,0x00000000de666e98,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.278: [GC (Allocation Failure) [PSYoungGen: 262144K->43519K(305664K)] 262144K->83142K(1005056K), 0.0200116 secs] [Times: user=0.09 sys=0.24, real=0.02 secs] 
+0.377: [GC (Allocation Failure) [PSYoungGen: 305663K->43517K(305664K)] 345286K->152794K(1005056K), 0.0239727 secs] [Times: user=0.12 sys=0.26, real=0.03 secs] 
+0.476: [GC (Allocation Failure) [PSYoungGen: 305661K->43516K(305664K)] 414938K->232270K(1005056K), 0.0275090 secs] [Times: user=0.26 sys=0.21, real=0.03 secs] 
+0.582: [GC (Allocation Failure) [PSYoungGen: 305660K->43513K(305664K)] 494414K->305443K(1005056K), 0.0257631 secs] [Times: user=0.24 sys=0.20, real=0.02 secs] 
+0.687: [GC (Allocation Failure) [PSYoungGen: 305657K->43515K(305664K)] 567587K->380741K(1005056K), 0.0257199 secs] [Times: user=0.25 sys=0.19, real=0.03 secs] 
+0.789: [GC (Allocation Failure) [PSYoungGen: 305659K->43509K(160256K)] 642885K->456298K(859648K), 0.0264743 secs] [Times: user=0.26 sys=0.19, real=0.03 secs] 
+0.851: [GC (Allocation Failure) [PSYoungGen: 160245K->72369K(232960K)] 573034K->490944K(932352K), 0.0281369 secs] [Times: user=0.45 sys=0.03, real=0.02 secs] 
+0.923: [GC (Allocation Failure) [PSYoungGen: 188440K->101623K(232960K)] 607014K->529564K(932352K), 0.0321993 secs] [Times: user=0.53 sys=0.04, real=0.03 secs] 
+1.011: [GC (Allocation Failure) [PSYoungGen: 218359K->114419K(232960K)] 646300K->561228K(932352K), 0.0429568 secs] [Times: user=0.68 sys=0.07, real=0.04 secs] 
+执行结束。共生成对象次数:7567
+Heap
+ PSYoungGen      total 232960K, used 199499K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 72% used [0x00000000eab00000,0x00000000efe15d28,0x00000000f1d00000)
+  from space 116224K, 98% used [0x00000000f1d00000,0x00000000f8cbcfd0,0x00000000f8e80000)
+  to   space 116224K, 0% used [0x00000000f8e80000,0x00000000f8e80000,0x0000000100000000)
+ ParOldGen       total 699392K, used 446808K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 63% used [0x00000000c0000000,0x00000000db456140,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.281: [GC (Allocation Failure) [PSYoungGen: 262144K->43515K(305664K)] 262144K->75055K(1005056K), 0.0177475 secs] [Times: user=0.10 sys=0.19, real=0.02 secs] 
+0.378: [GC (Allocation Failure) [PSYoungGen: 305659K->43518K(305664K)] 337199K->150104K(1005056K), 0.0221878 secs] [Times: user=0.12 sys=0.26, real=0.02 secs] 
+0.481: [GC (Allocation Failure) [PSYoungGen: 305662K->43512K(305664K)] 412248K->218897K(1005056K), 0.0237729 secs] [Times: user=0.28 sys=0.13, real=0.03 secs] 
+0.583: [GC (Allocation Failure) [PSYoungGen: 305656K->43504K(305664K)] 481041K->280974K(1005056K), 0.0219934 secs] [Times: user=0.24 sys=0.14, real=0.02 secs] 
+0.681: [GC (Allocation Failure) [PSYoungGen: 305648K->43519K(305664K)] 543118K->354111K(1005056K), 0.0243582 secs] [Times: user=0.26 sys=0.16, real=0.03 secs] 
+0.785: [GC (Allocation Failure) [PSYoungGen: 305663K->43514K(160256K)] 616255K->428841K(859648K), 0.0249398 secs] [Times: user=0.28 sys=0.14, real=0.02 secs] 
+0.844: [GC (Allocation Failure) [PSYoungGen: 160214K->78345K(232960K)] 545541K->467581K(932352K), 0.0305424 secs] [Times: user=0.50 sys=0.03, real=0.03 secs] 
+0.909: [GC (Allocation Failure) [PSYoungGen: 195081K->99652K(232960K)] 584317K->496954K(932352K), 0.0290389 secs] [Times: user=0.48 sys=0.03, real=0.03 secs] 
+0.974: [GC (Allocation Failure) [PSYoungGen: 216388K->103363K(232960K)] 613690K->523236K(932352K), 0.0383484 secs] [Times: user=0.57 sys=0.09, real=0.03 secs] 
+1.046: [GC (Allocation Failure) [PSYoungGen: 220099K->73042K(232960K)] 639972K->555857K(932352K), 0.0324726 secs] [Times: user=0.37 sys=0.20, real=0.03 secs] 
+执行结束。共生成对象次数:7762
+Heap
+ PSYoungGen      total 232960K, used 78063K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eafe7470,0x00000000f1d00000)
+  from space 116224K, 62% used [0x00000000f8e80000,0x00000000fd5d4ae8,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 482814K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 69% used [0x00000000c0000000,0x00000000dd77faf0,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.320: [GC (Allocation Failure) [PSYoungGen: 262144K->43504K(305664K)] 262144K->79523K(1005056K), 0.0172614 secs] [Times: user=0.12 sys=0.16, real=0.01 secs] 
+0.474: [GC (Allocation Failure) [PSYoungGen: 305648K->43502K(305664K)] 341667K->149017K(1005056K), 0.0169725 secs] [Times: user=0.09 sys=0.18, real=0.02 secs] 
+0.597: [GC (Allocation Failure) [PSYoungGen: 305646K->43511K(305664K)] 411161K->216237K(1005056K), 0.0218150 secs] [Times: user=0.23 sys=0.10, real=0.03 secs] 
+0.725: [GC (Allocation Failure) [PSYoungGen: 305655K->43517K(305664K)] 478381K->277559K(1005056K), 0.0177143 secs] [Times: user=0.21 sys=0.09, real=0.02 secs] 
+0.849: [GC (Allocation Failure) [PSYoungGen: 305661K->43506K(305664K)] 539703K->347594K(1005056K), 0.0191041 secs] [Times: user=0.21 sys=0.12, real=0.02 secs] 
+0.976: [GC (Allocation Failure) [PSYoungGen: 305650K->43507K(160256K)] 609738K->419319K(859648K), 0.0185606 secs] [Times: user=0.22 sys=0.10, real=0.02 secs] 
+1.041: [GC (Allocation Failure) [PSYoungGen: 160243K->66393K(232960K)] 536055K->451373K(932352K), 0.0213846 secs] [Times: user=0.33 sys=0.04, real=0.02 secs] 
+1.109: [GC (Allocation Failure) [PSYoungGen: 183129K->91655K(232960K)] 568109K->486313K(932352K), 0.0226661 secs] [Times: user=0.36 sys=0.02, real=0.02 secs] 
+执行结束。共生成对象次数:6746
+Heap
+ PSYoungGen      total 232960K, used 96443K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eaface58,0x00000000f1d00000)
+  from space 116224K, 78% used [0x00000000f8e80000,0x00000000fe801e10,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 394657K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 56% used [0x00000000c0000000,0x00000000d81686f8,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
+开始执行.......
+0.279: [GC (Allocation Failure) [PSYoungGen: 262144K->43519K(305664K)] 262144K->78330K(1005056K), 0.0173874 secs] [Times: user=0.12 sys=0.16, real=0.02 secs] 
+0.381: [GC (Allocation Failure) [PSYoungGen: 305569K->43517K(305664K)] 340380K->155465K(1005056K), 0.0219167 secs] [Times: user=0.14 sys=0.23, real=0.02 secs] 
+0.476: [GC (Allocation Failure) [PSYoungGen: 305367K->43519K(305664K)] 417314K->228994K(1005056K), 0.0243656 secs] [Times: user=0.26 sys=0.16, real=0.02 secs] 
+0.574: [GC (Allocation Failure) [PSYoungGen: 305663K->43514K(305664K)] 491138K->302123K(1005056K), 0.0235747 secs] [Times: user=0.28 sys=0.13, real=0.02 secs] 
+0.670: [GC (Allocation Failure) [PSYoungGen: 305658K->43511K(305664K)] 564267K->380805K(1005056K), 0.0255259 secs] [Times: user=0.27 sys=0.18, real=0.03 secs] 
+0.771: [GC (Allocation Failure) [PSYoungGen: 305655K->43505K(160256K)] 642949K->454036K(859648K), 0.0232195 secs] [Times: user=0.24 sys=0.16, real=0.02 secs] 
+0.827: [GC (Allocation Failure) [PSYoungGen: 159929K->72062K(232960K)] 570460K->488782K(932352K), 0.0278258 secs] [Times: user=0.45 sys=0.03, real=0.03 secs] 
+0.886: [GC (Allocation Failure) [PSYoungGen: 188798K->94208K(232960K)] 605518K->521817K(932352K), 0.0287567 secs] [Times: user=0.47 sys=0.03, real=0.03 secs] 
+0.948: [GC (Allocation Failure) [PSYoungGen: 210858K->110632K(232960K)] 638467K->555086K(932352K), 0.0405686 secs] [Times: user=0.65 sys=0.06, real=0.04 secs] 
+1.022: [GC (Allocation Failure) [PSYoungGen: 227368K->74616K(232960K)] 671822K->580468K(932352K), 0.0318262 secs] [Times: user=0.39 sys=0.17, real=0.03 secs] 
+执行结束。共生成对象次数:8040
+Heap
+ PSYoungGen      total 232960K, used 175718K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 86% used [0x00000000eab00000,0x00000000f0dbba18,0x00000000f1d00000)
+  from space 116224K, 64% used [0x00000000f8e80000,0x00000000fd75e098,0x0000000100000000)
+  to   space 116224K, 0% used [0x00000000f1d00000,0x00000000f1d00000,0x00000000f8e80000)
+ ParOldGen       total 699392K, used 505852K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 72% used [0x00000000c0000000,0x00000000dedff148,0x00000000eab00000)
+ Metaspace       used 2533K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 273K, capacity 386K, committed 512K, reserved 1048576K
