@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="He ChengDong">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="摘要本文从并发出现的背景出发，介绍了并发执行方式解决了串行执行方式导致的资源利用率低的问题。并据此提出了只有当任务存在阻塞的前提下，使用并发才能带来系统资源利用率提升的效果。凡事都有两面性，使用并发在带来系统吞吐量提升的同时，也可能引入一些风险，本文对这些风险也进行了一些简单的讨论。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发基本理论论述">
+<meta property="og:url" content="http://example.com/%E5%B9%B6%E5%8F%91%E5%9F%BA%E6%9C%AC%E7%90%86%E8%AE%BA%E8%AE%BA%E8%BF%B0/index.html">
+<meta property="og:site_name" content="木木东东">
+<meta property="og:description" content="摘要本文从并发出现的背景出发，介绍了并发执行方式解决了串行执行方式导致的资源利用率低的问题。并据此提出了只有当任务存在阻塞的前提下，使用并发才能带来系统资源利用率提升的效果。凡事都有两面性，使用并发在带来系统吞吐量提升的同时，也可能引入一些风险，本文对这些风险也进行了一些简单的讨论。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/%E5%B9%B6%E5%8F%91%E5%9F%BA%E6%9C%AC%E7%90%86%E8%AE%BA%E8%AE%BA%E8%BF%B0/i++%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0.jpg">
+<meta property="article:published_time" content="2020-06-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-12T03:19:57.855Z">
+<meta property="article:author" content="He ChengDong">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="并发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/%E5%B9%B6%E5%8F%91%E5%9F%BA%E6%9C%AC%E7%90%86%E8%AE%BA%E8%AE%BA%E8%BF%B0/i++%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0.jpg">
+  
+  
+  
+  <title>并发基本理论论述 - 木木东东</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":10},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"MHgmoVUR27FPckAoBKRtAiMv-9Nh9j0Va","app_key":"2qNXhw9sfXRlUYpktcoctw7S","server_url":"https://mhgmovur.lc-cn-e1-shared.com","path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>木木东东</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/images/banner.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">并发基本理论论述</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-18 00:00" pubdate>
+          2020年6月18日
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">并发基本理论论述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>本文从并发出现的背景出发，介绍了并发执行方式解决了串行执行方式导致的资源利用率低的问题。并据此提出了只有当任务存在阻塞的前提下，使用并发才能带来系统资源利用率提升的效果。凡事都有两面性，使用并发在带来系统吞吐量提升的同时，也可能引入一些风险，本文对这些风险也进行了一些简单的讨论。</p>
+<span id="more"></span>
+
+<h1 id="1-并发的出现"><a href="#1-并发的出现" class="headerlink" title="1 并发的出现"></a>1 并发的出现</h1><h2 id="1-1-串行执行"><a href="#1-1-串行执行" class="headerlink" title="1.1 串行执行"></a>1.1 串行执行</h2><p>早期的计算机主要用来执行逻辑简单但过程繁琐的数学计算任务。由于在物理环境下编程难度很大，每次使用时，全程只运行一个程序，执行一个任务，该任务独享所有系统资源。当有多个任务时，只能串行的一个一个执行。</p>
+<p><strong>由于计算机不同组成部分之间的运行速度不同，在协同工作时，运行速度较快的模块需要等待运行速度较慢的模块完成计算后才能继续处理。</strong>如磁盘、网络等外存，它们与CPU的处理速度差距甚至可以达到5个数量级的差距。</p>
+<p>显然，对于一个需要外存参与的任务，与花费在外存I&#x2F;O等待上的时间相比，实际用在任务计算上的时间甚至可以忽略不计了。因此，<strong>在不改变串行执行方式的前提下，要想缩短多任务执行的总时长，只能缩短外存的I&#x2F;O等待时间</strong>。但即使是目前速度最快的固态硬盘，也无法将I&#x2F;O时间缩短到与CPU指令执行时间同一个数量级。</p>
+<p>CPU的长时间等待导致其利用率极低。自然地，人们希望CPU能够转而执行其他的计算任务，而不是浪费时间在等待上。</p>
+<h2 id="1-2-并发执行"><a href="#1-2-并发执行" class="headerlink" title="1.2 并发执行"></a>1.2 并发执行</h2><p>基于对多任务能够同时执行的需求，就需要<strong>一个能够对系统资源进行调度和分配的角色，它能对任务和资源进行管理，将资源合理的分配给所有任务。这个角色就是操作系统。</strong></p>
+<p>操作系统对CPU的执行时间进行分片，并分配给每个程序使用。当一个程序A进入外存I&#x2F;O等待或者使用完了本次分配的时间片，CPU就将程序A的执行现场保存下来，然后选择另一个待执行的程序B开始进行处理；当外存I&#x2F;O处理就绪或者时间片使用权又轮到程序A时，CPU又将程序A的执行现场恢复回来，并从上次切出的地方开始继续执行，直到再次出现外存I&#x2F;O等待或者分配的时间片用完或者程序A执行结束。</p>
+<p>时间分片的运行方式，使得每个任务能交替地使用CPU资源。同时，当一个程序在等待的时候，可以先运行另一个程序，这无疑提高了CPU的资源利用率。</p>
+<h1 id="2-并发与并行的区别"><a href="#2-并发与并行的区别" class="headerlink" title="2 并发与并行的区别"></a>2 并发与并行的区别</h1><p><strong>当多个任务在同一个CPU上通过时间分片的方式交替运行时，称为并发执行。当多个任务在多个CPU上同时进行计算时，称为并行执行。</strong></p>
+<p>在一个单核CPU上，在编辑文本时还能播放音乐，在浏览网页时还能播放视频，这是并发机制在起作用；而在多核CPU上同样能完成这些工作，但这可能是由于并行执行引起的。</p>
+<p>并发和并行的概念经常被混淆。由于并发执行引起的上下文切换所消耗的时间相比于人类可感知到的时间停顿来说很小，因此不论是并发还是并行，看起来都是多个任务在同时运行。</p>
+<h1 id="3-并发的优势及使用前提"><a href="#3-并发的优势及使用前提" class="headerlink" title="3 并发的优势及使用前提"></a>3 并发的优势及使用前提</h1><p>任务的复杂程度不同，执行这些任务所需要的资源也不同，计算机中参与任务执行的组成部分也不同。对于计算10的阶乘这样的简单任务，只需要用到CPU和内存即可，甚至可以不需要内存参与，单纯由CPU也能完成；而对于比如银行报表统计这类数据量大，计算逻辑复杂的任务，除了CPU和内存外，还需要文件系统的参与，甚至可能还需要网络系统的参与。<strong>根据执行任务所需的资源不同，使用串行和并发的方式来执行多任务，得到的总体性能效果也是不同的。</strong></p>
+<p>串行执行不需要外部资源参与的多任务，执行总时间可表示为<br>$$<br>总时间&#x3D;\sum任务计算时间<br>$$<br>并发执行不需要外部资源参与的多任务，执行总时间可表示为<br>$$<br>总时间&#x3D;\sum(任务计算时间+上下文切换时间)<br>$$<br>串行执行需要外部资源参与的多任务，执行总时间可表示为<br>$$<br>总时间&#x3D;\sum(任务计算时间+任务I&#x2F;O等待时间)<br>&#x3D;\sum(1+10^5)任务计算时间<br>$$<br>并发执行需要外部资源参与的多任务，执行总时间可表示为<br>$$<br>总时间&#x3D;\sum(任务计算时间+上下文切换时间)<br>$$<br>上下文切换虽然也是一个比较重的操作，但相对于外存I&#x2F;O来说，依然是有多个数量级的差距。</p>
+<p>从上述结果可以看出，当执行任务不需要外部资源参与时，使用并发相比串行执行需要多付出上下文切换的性能开销，总的执行时间反而更长了；而对于需要外部资源参与的任务，在等待时间里切换并执行其他任务，能够更充分的利用CPU。</p>
+<p>因此，对于CPU密集型的任务，串行执行的效率更高；对于I&#x2F;O密集型的任务，并发执行的效率更高。可见，<strong>使用并发能够提升系统资源利用率的前提在于，任务的执行需要依赖于外部速度较慢的资源</strong>。</p>
+<h1 id="4-使用并发带来的风险"><a href="#4-使用并发带来的风险" class="headerlink" title="4 使用并发带来的风险"></a>4 使用并发带来的风险</h1><p>任务程序的并发执行，意味着CPU资源和内存资源将会被共享。在不考虑高速缓存的情况下，CPU的作用只是进行计算，同一时间只能处理一个任务的计算，不同任务的计算不会互相影响；而内存作为存储单元，会被多个任务共享，如果没有正确地控制各个任务的行为，那么就有可能出现不同任务错误地使用相同的内存区域，进而引发一些不可控的问题。</p>
+<p>因此，<strong>当内存被不同的程序错误地共享时，并发就可能导致问题。</strong>如果能将任务分解为互不依赖的子任务来并发执行，那么就不会出现问题。当然，在实际问题中难免任务之间存在相互依赖的场景，因此，讨论使用并发可能出现的问题及其解决之道是有意义的。</p>
+<h2 id="4-1-安全性问题"><a href="#4-1-安全性问题" class="headerlink" title="4.1 安全性问题"></a>4.1 安全性问题</h2><p>当内存资源被共享时，最常见的就是安全性问题。安全性问题指的是并发执行任务的结果依赖于任务的执行时序。安全性问题来源于程序的并发运行及内存资源的读写共享。</p>
+<p>使用自增操作符(++)对共享数据进行并发操作，经常被作为引入并发安全性问题概念的经典案例。这个案例十分简单但却很好的暴露出了安全性问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">inc</span><span class="hljs-params">()</span>&#123;<br>    i++;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当并发地执行上述代码片段时，多个线程会并发地对共享变量i所在的内存地址进行可分割的”读取-修改-写入”操作，在特定的时序条件下，就可能出现部分线程的操作被覆盖的问题。</p>
+<p><img src="/%E5%B9%B6%E5%8F%91%E5%9F%BA%E6%9C%AC%E7%90%86%E8%AE%BA%E8%AE%BA%E8%BF%B0/i++%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0.jpg" srcset="/img/loading.gif" lazyload alt="i++问题描述"></p>
+<p>要解决安全性问题，只需要破坏导致安全性问题的任一条件即可。例如通过使用单线程运行破坏并发运行条件；通过创建不可变对象破坏读写共享条件；通过线程同步机制破坏读写共享条件；通过只读共享破坏读写共享条件。</p>
+<h2 id="4-2-活跃性问题"><a href="#4-2-活跃性问题" class="headerlink" title="4.2 活跃性问题"></a>4.2 活跃性问题</h2><p><strong>活跃性问题是指并发执行的任务无法及时的执行下去。</strong>活跃性问题常见于错误地使用了同步机制。活跃性问题是非常严重的问题，只能通过中止任务来进行恢复。并且这类问题都是在执行过程中动态的发生，一些代码检查工具也难以发现，因此排查十分的困难。</p>
+<p>常见的活跃性问题有死锁，活锁，饥饿等。</p>
+<h3 id="4-2-1-死锁"><a href="#4-2-1-死锁" class="headerlink" title="4.2.1 死锁"></a>4.2.1 死锁</h3><p>死锁的典型案例是哲学家进餐问题。最简单的版本是两个哲学家去吃饭，他们时而思考时而吃饭。桌上只有两只筷子，分别放在他们的左右手边，只有拿到一双筷子才能吃东西，并且吃到东西后才会将筷子放回。假设两个人同时拿到了右边的筷子，然后开始等待左边的筷子空出来，但是因为他们还没有吃到东西，因此又不放下已经拿到的筷子。那么大家就只能这么无限等待下去。</p>
+<p><strong>当多个任务互相拥有着对方所需的资源，又在等待着对方拥有的资源，并且在得到自己需要的所有资源之前不会放弃已拥有的资源，这种情况将产生死锁。</strong></p>
+<p>在并发环境下，当一个线程获取到了锁A，并尝试继续获取锁B，同时，另一个线程已经获取到了锁B，并尝试继续获取锁A。此时，双方都拿着对方所需的资源等待对方的资源，并且在获取到锁AB并完成计算之前双方都不会放弃自己手中的资源。那么这两个线程将一直这么等待下去，直到有外力对这种关系进行破坏。</p>
+<p>死锁问题一般是由于没有以统一固定的顺序获取多个锁。例如上例中的锁AB，如果在获取锁前都根据字母顺序进行获取，即先获取锁A再获取锁B，则死锁不会发生。在一些动态加锁的场景中，比如转账业务中对转账方和收款方进行的加锁操作，如果以先获取转账方的锁再获取收款方的锁的逻辑进行锁获取，则当两个账户相互转账时，就有可能发生动态的锁顺序死锁，可以先对转账双方账号进行排序，再根据排序顺序进行加锁，来保证多个线程加锁的顺序能一致。</p>
+<h3 id="4-2-2-活锁"><a href="#4-2-2-活锁" class="headerlink" title="4.2.2 活锁"></a>4.2.2 活锁</h3><p><strong>当多个相互协作的线程都对彼此进行响应从而修改各自的状态，并使得任何一个线程都无法继续执行时，就发生了活锁。</strong></p>
+<p>在哲学家进餐问题中修改哲学家的行为，规定哲学家只能先拿左边的筷子，成功后再拿右边的筷子，并且如果右边的筷子没有拿到，那就将已拿到的筷子放回，然后重新尝试。那么可能出现这样的情况，两位哲学家同时拿起左边的筷子，同时发现右边没有筷子，同时放下左边的筷子，再同时拿起左边的筷子，这样循环往复下去，虽然他们一直有所动作，但是他们都无法完成进餐。</p>
+<p>解决活锁的办法是引入随机等待。当因为没有获取到需要的资源而放弃已有的资源后，随机等待一段时间再开始进行重试。</p>
+<h3 id="4-2-3-饥饿"><a href="#4-2-3-饥饿" class="headerlink" title="4.2.3 饥饿"></a>4.2.3 饥饿</h3><p><strong>当任务因为一直访问不到自己所需的资源时，就产生了饥饿问题。</strong></p>
+<p>在哲学家进餐问题中修改哲学家的行为，规定哲学家在拿到一整双筷子后，就一直进餐，知道把桌上的东西都吃完。那么首先拿到一双筷子的哲学家在吃完东西之前都不会放弃筷子，也就导致另一位哲学家一直无法拿到筷子。</p>
+<p>在并发环境下，如果一个线程在持有锁时执行一些无法结束的行为，如无限循环，那么其他需要这个锁的线程将永远无法得到它。</p>
+<p>饥饿问题通常是由于一些依赖于具体执行平台的编码，比如指定线程优先级等。应该尽可能的避免这种编码，或显式的主动让出资源给优先级较低的线程，让它们有机会执行自己的任务。</p>
+<h2 id="4-3-性能问题"><a href="#4-3-性能问题" class="headerlink" title="4.3 性能问题"></a>4.3 性能问题</h2><p><strong>性能问题是指不当使用并发导致的系统整体性能下降，吞吐量下降。</strong>显然的，当用于上下文切换花费的时间多于任务实际执行的时间时，使用并发来解决问题，就是一种得不偿失的方案。</p>
+<h1 id="5-总结"><a href="#5-总结" class="headerlink" title="5 总结"></a>5 总结</h1><p>当我们谈论并发时，更多的是在讨论如何充分的利用单个CPU资源。</p>
+<p>使用并发来执行任务已经是当今不可避免的方式了。即使应用程序本身简单到只用到一个线程来执行，但在底层的运行时环境或者更基础的操作系统中，也一定还会有其他各式各样的后台任务在并发执行。</p>
+<p>尽管现在硬件速度非常快、并且高级程序设计语言也对并发特性做了很多封装来降低编写并发程序的门槛、人们在进行程序设计时也会习惯性地对任务进行分解以期能以并发的方式来执行，但依然需要注意“无阻塞不并发”的原则。如果任务都只是计算，没有外部资源的等待，那么大可不必使用并发方式执行，即使不在乎几十毫秒的上下文切换开销，也应该意识到不使用并发就不会为程序编写引入更多的复杂性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="category-chain-item">并发编程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/">#Java</a>
+      
+        <a href="/tags/%E5%B9%B6%E5%8F%91/">#并发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/java%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E6%80%A7%E9%97%AE%E9%A2%98%E8%AE%BA%E8%BF%B0/" title="Java中的并发安全性问题论述">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java中的并发安全性问题论述</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.4.17/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"MHgmoVUR27FPckAoBKRtAiMv-9Nh9j0Va","appKey":"2qNXhw9sfXRlUYpktcoctw7S","path":"window.location.pathname","placeholder":"","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="并发编程"
+        id="heading-1a9a671bb1da8c030da96f67497751c7" role="tab" data-toggle="collapse" href="#collapse-1a9a671bb1da8c030da96f67497751c7"
+        aria-expanded="true"
+      >
+        并发编程
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-1a9a671bb1da8c030da96f67497751c7"
+           role="tabpanel" aria-labelledby="heading-1a9a671bb1da8c030da96f67497751c7">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/java%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E6%80%A7%E9%97%AE%E9%A2%98%E8%AE%BA%E8%BF%B0/" title="Java中的并发安全性问题论述"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Java中的并发安全性问题论述</span>
+        </a>
+      
+    
+      
+      
+        <a href="/%E5%B9%B6%E5%8F%91%E5%9F%BA%E6%9C%AC%E7%90%86%E8%AE%BA%E8%AE%BA%E8%BF%B0/" title="并发基本理论论述"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">并发基本理论论述</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.1/es5/tex-mml-chtml.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

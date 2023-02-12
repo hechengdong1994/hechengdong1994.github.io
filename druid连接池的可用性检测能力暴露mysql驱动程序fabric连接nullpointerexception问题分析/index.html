@@ -1,0 +1,836 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="He ChengDong">
+  <meta name="keywords" content="java">
+  
+    <meta name="description" content="摘要数据库连接池组件已经成为服务端应用中进行数据库连接管理在事实上的标准方案。而引入新组件的同时自然也引入了更多的风险。本文尝试解决一个由连接池版本升级引发驱动程序抛出NullPointerException导致项目无法启动的问题。以异常堆栈作为排查依据，通过查看源码和构建复现场景的手段确认问题发生的根本原因，并尝试在该问题涉及到的不同层面提出合理可行的解决方案。进一步的，还继续深入研究了其他连接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析">
+<meta property="og:url" content="http://example.com/druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2mysql%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8Ffabric%E8%BF%9E%E6%8E%A5nullpointerexception%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="木木东东">
+<meta property="og:description" content="摘要数据库连接池组件已经成为服务端应用中进行数据库连接管理在事实上的标准方案。而引入新组件的同时自然也引入了更多的风险。本文尝试解决一个由连接池版本升级引发驱动程序抛出NullPointerException导致项目无法启动的问题。以异常堆栈作为排查依据，通过查看源码和构建复现场景的手段确认问题发生的根本原因，并尝试在该问题涉及到的不同层面提出合理可行的解决方案。进一步的，还继续深入研究了其他连接">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2MySQL%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8FFabric%E8%BF%9E%E6%8E%A5NullPointerException%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/Tomcat%E8%BF%9E%E6%8E%A5%E6%B1%A0%E6%A3%80%E5%87%BA%E6%A3%80%E6%B5%8BborrowConnection%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2MySQL%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8FFabric%E8%BF%9E%E6%8E%A5NullPointerException%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/Tomcat%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%A9%BA%E9%97%B2%E6%A3%80%E6%B5%8BtestAllIdle%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png">
+<meta property="article:published_time" content="2023-02-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-12T03:19:57.851Z">
+<meta property="article:author" content="He ChengDong">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Druid">
+<meta property="article:tag" content="MySQL Connector&#x2F;J">
+<meta property="article:tag" content="连接池">
+<meta property="article:tag" content="驱动程序">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2MySQL%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8FFabric%E8%BF%9E%E6%8E%A5NullPointerException%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/Tomcat%E8%BF%9E%E6%8E%A5%E6%B1%A0%E6%A3%80%E5%87%BA%E6%A3%80%E6%B5%8BborrowConnection%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png">
+  
+  
+  
+  <title>Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析 - 木木东东</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":10},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"MHgmoVUR27FPckAoBKRtAiMv-9Nh9j0Va","app_key":"2qNXhw9sfXRlUYpktcoctw7S","server_url":"https://mhgmovur.lc-cn-e1-shared.com","path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>木木东东</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/images/banner.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-02-11 00:00" pubdate>
+          2023年2月11日
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>数据库连接池组件已经成为服务端应用中进行数据库连接管理在事实上的标准方案。而引入新组件的同时自然也引入了更多的风险。本文尝试解决一个由连接池版本升级引发驱动程序抛出NullPointerException导致项目无法启动的问题。以异常堆栈作为排查依据，通过查看源码和构建复现场景的手段确认问题发生的根本原因，并尝试在该问题涉及到的不同层面提出合理可行的解决方案。进一步的，还继续深入研究了其他连接池的相关实现，以分析其没有引发该异常的原因。</p>
+<span id="more"></span>
+
+<h1 id="1-现象描述"><a href="#1-现象描述" class="headerlink" title="1 现象描述"></a>1 现象描述</h1><p>将项目中使用的Druid连接池版本从1.1.22升级到1.2.15后项目无法启动。</p>
+<p>异常堆栈如下（省略部分spring堆栈并隐去部分信息）：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs stylus">&#123;dataSource-<span class="hljs-number">49</span>&#125; init error<br>java<span class="hljs-selector-class">.sql</span><span class="hljs-selector-class">.SQLException</span>: validateConnection false<br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.validateConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1461</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.createPhysicalConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1812</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidDataSource</span><span class="hljs-selector-class">.init</span>(DruidDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">914</span>) <span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidDataSource</span><span class="hljs-selector-class">.getConnection</span>(DruidDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1433</span>) <span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	<br>Caused by: java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.NullPointerException</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.StatementImpl<span class="hljs-variable">$CancelTask</span>.&lt;init&gt;(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">95</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span><span class="hljs-selector-class">.StatementImpl</span><span class="hljs-selector-class">.executeQuery</span>(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1541</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke0</span>(Native Method) ~<span class="hljs-selector-attr">[?:1.8.0_281]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(NativeMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">62</span>) ~<span class="hljs-selector-attr">[?:1.8.0_281]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.DelegatingMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(DelegatingMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">43</span>) ~<span class="hljs-selector-attr">[?:1.8.0_281]</span><br>	at java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.Method</span><span class="hljs-selector-class">.invoke</span>(Method<span class="hljs-selector-class">.java</span>:<span class="hljs-number">498</span>) ~<span class="hljs-selector-attr">[?:1.8.0_281]</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.LoadBalancingConnectionProxy<span class="hljs-variable">$ConnectionErrorFiringInvocationHandler</span><span class="hljs-selector-class">.invoke</span>(LoadBalancingConnectionProxy<span class="hljs-selector-class">.java</span>:<span class="hljs-number">107</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at com<span class="hljs-selector-class">.sun</span><span class="hljs-selector-class">.proxy</span>.<span class="hljs-variable">$Proxy164</span><span class="hljs-selector-class">.executeQuery</span>(Unknown Source) ~<span class="hljs-selector-attr">[?:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.vendor</span><span class="hljs-selector-class">.MySqlValidConnectionChecker</span><span class="hljs-selector-class">.isValidConnection</span>(MySqlValidConnectionChecker<span class="hljs-selector-class">.java</span>:<span class="hljs-number">140</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.validateConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1440</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	... <span class="hljs-number">118</span> more<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-配置收集"><a href="#2-配置收集" class="headerlink" title="2 配置收集"></a>2 配置收集</h1><p>作为底层服务的维护人员，当上层的使用方报告问题时，首先要做的就是尽可能完整的收集相关信息以复现问题。在这个问题中，收集了从连接池到MySQL服务器之间的各层组件的版本及配置信息。</p>
+<ol>
+<li><p>Druid连接池版本：1.1.22和1.2.15</p>
+</li>
+<li><p>Druid连接池配置（根据后续的排查情况，此处省略部分不相关配置项）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;initialSize&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;maxActive&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">50</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;minIdle&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;maxWait&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;validationQuery&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;SELECT 1&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;validationQueryTimeout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;testOnBorrow&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;testOnReturn&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;testWhileIdle&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;timeBetweenEvictionRunsMillis&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">60000</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;minEvictableIdleTimeMillis&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">30000</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;maxEvictableIdleTimeMillis&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100000</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>MySQL Connector&#x2F;J连接方式：连接协议为<code>jdbc:mysql:fabric://</code>，对应的Driver实现类为<code>com.mysql.fabric.jdbc.FabricMySQLDriver</code>，由Driver构造出的Connection实现类为<code>com.mysql.fabric.jdbc.FabricMySQLConnectionProxy</code>(主要逻辑)和<code>com.mysql.fabric.jdbc.JDBC4FabricMySQLConnectionProxy</code>。</p>
+</li>
+<li><p>MySQL Connector&#x2F;J驱动版本：5.1.49版本。（实际项目使用的是经过二次开发的5.1.30版本，但经后续测试，直至最新的5.1.49版本的驱动都存在该问题）</p>
+</li>
+<li><p>MySQL服务：5.7版本。使用Fabric服务作为集群管理方案。</p>
+</li>
+</ol>
+<h1 id="3-异常复现"><a href="#3-异常复现" class="headerlink" title="3 异常复现"></a>3 异常复现</h1><p>根据上述配置，构造Druid连接池实例，并调用方法获取连接，即可复现该异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">Properties</span> <span class="hljs-variable">properties</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Properties</span>();<br>        properties.put(<span class="hljs-string">&quot;url&quot;</span>, <span class="hljs-string">&quot;jdbc:mysql:fabric://&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;username&quot;</span>, <span class="hljs-string">&quot;username&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;password&quot;</span>, <span class="hljs-string">&quot;password&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;driverClassName&quot;</span>, <span class="hljs-string">&quot;com.mysql.fabric.jdbc.FabricMySQLDriver&quot;</span>);<br><br>        properties.put(<span class="hljs-string">&quot;initialSize&quot;</span>, <span class="hljs-string">&quot;10&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;maxActive&quot;</span>, <span class="hljs-string">&quot;50&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;minIdle&quot;</span>, <span class="hljs-string">&quot;10&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;maxWait&quot;</span>, <span class="hljs-string">&quot;3000&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;validationQuery&quot;</span>, <span class="hljs-string">&quot;SELECT 1&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;validationQueryTimeout&quot;</span>, <span class="hljs-string">&quot;3000&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;testOnBorrow&quot;</span>, <span class="hljs-string">&quot;false&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;testOnReturn&quot;</span>, <span class="hljs-string">&quot;false&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;testWhileIdle&quot;</span>, <span class="hljs-string">&quot;true&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;timeBetweenEvictionRunsMillis&quot;</span>, <span class="hljs-string">&quot;60000&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;minEvictableIdleTimeMillis&quot;</span>, <span class="hljs-string">&quot;30000&quot;</span>);<br>        properties.put(<span class="hljs-string">&quot;maxEvictableIdleTimeMillis&quot;</span>, <span class="hljs-string">&quot;100000&quot;</span>);<br><br>        <span class="hljs-type">DruidDataSource</span> <span class="hljs-variable">dataSource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DruidDataSource</span>();<br>        DruidDataSourceFactory.config(dataSource, properties);<br><br>        dataSource.getConnection(); <span class="hljs-comment">// 抛出异常</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到与实际项目的异常堆栈相同：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs stylus">&#123;dataSource-<span class="hljs-number">1</span>&#125; init error<br>java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.NullPointerException</span>: null<br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.StatementImpl<span class="hljs-variable">$CancelTask</span>.&lt;init&gt;(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">95</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span><span class="hljs-selector-class">.StatementImpl</span><span class="hljs-selector-class">.executeQuery</span>(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1546</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke0</span>(Native Method) ~<span class="hljs-selector-attr">[?:1.8.0_202]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(NativeMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">62</span>) ~<span class="hljs-selector-attr">[?:1.8.0_202]</span><br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.DelegatingMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(DelegatingMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">43</span>) ~<span class="hljs-selector-attr">[?:1.8.0_202]</span><br>	at java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.Method</span><span class="hljs-selector-class">.invoke</span>(Method<span class="hljs-selector-class">.java</span>:<span class="hljs-number">498</span>) ~<span class="hljs-selector-attr">[?:1.8.0_202]</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.LoadBalancingConnectionProxy<span class="hljs-variable">$ConnectionErrorFiringInvocationHandler</span><span class="hljs-selector-class">.invoke</span>(LoadBalancingConnectionProxy<span class="hljs-selector-class">.java</span>:<span class="hljs-number">107</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.30.jar:?]</span><br>	at com<span class="hljs-selector-class">.sun</span><span class="hljs-selector-class">.proxy</span>.<span class="hljs-variable">$Proxy21</span><span class="hljs-selector-class">.executeQuery</span>(Unknown Source) ~<span class="hljs-selector-attr">[?:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.validateConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1476</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.createPhysicalConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1812</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidDataSource</span><span class="hljs-selector-class">.init</span>(DruidDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">914</span>) <span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidDataSource</span><span class="hljs-selector-class">.getConnection</span>(DruidDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1433</span>) <span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidDataSource</span><span class="hljs-selector-class">.getConnection</span>(DruidDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1429</span>) <span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>	at <span class="hljs-selector-tag">main</span>(Test<span class="hljs-selector-class">.java</span>:<span class="hljs-number">34</span>) <span class="hljs-selector-attr">[classes/:?]</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="4-排查过程"><a href="#4-排查过程" class="headerlink" title="4 排查过程"></a>4 排查过程</h1><p>该异常是由升级Druid连接池引起的，因此首先考虑是新版本连接池对驱动程序的不当使用导致了异常。</p>
+<h2 id="4-1-首先从连接池层面排查版本升级后抛出异常的原因"><a href="#4-1-首先从连接池层面排查版本升级后抛出异常的原因" class="headerlink" title="4.1 首先从连接池层面排查版本升级后抛出异常的原因"></a>4.1 首先从连接池层面排查版本升级后抛出异常的原因</h2><p>跟踪异常堆栈中连接池的相关方法调用</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.vendor</span><span class="hljs-selector-class">.MySqlValidConnectionChecker</span><span class="hljs-selector-class">.isValidConnection</span>(MySqlValidConnectionChecker<span class="hljs-selector-class">.java</span>:<span class="hljs-number">140</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br>at com<span class="hljs-selector-class">.alibaba</span><span class="hljs-selector-class">.druid</span><span class="hljs-selector-class">.pool</span><span class="hljs-selector-class">.DruidAbstractDataSource</span><span class="hljs-selector-class">.validateConnection</span>(DruidAbstractDataSource<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1440</span>) ~<span class="hljs-selector-attr">[druid-1.2.15.jar:?]</span><br></code></pre></td></tr></table></figure>
+
+<p>查看<code>MySqlValidConnectionChecker.isValidConnection</code>的验证逻辑</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Statement</span> <span class="hljs-variable">stmt</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><span class="hljs-keyword">try</span> &#123;<br>    stmt = conn.createStatement();<br>    <span class="hljs-keyword">if</span> (validationQueryTimeout &gt; <span class="hljs-number">0</span>) &#123;<br>        stmt.setQueryTimeout(validationQueryTimeout);<br>    &#125;<br>    rs = stmt.executeQuery(query); <span class="hljs-comment">// 此处抛出NPE</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125; <span class="hljs-keyword">finally</span> &#123;<br>    JdbcUtils.close(rs);<br>    JdbcUtils.close(stmt);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>继续查看外层<code>com.alibaba.druid.pool.DruidAbstractDataSource#validateConnection</code>对异常的处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (validConnectionChecker != <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-type">boolean</span> result;<br>    <span class="hljs-type">Exception</span> <span class="hljs-variable">error</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">try</span> &#123;<br>        result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);<br><br>        <span class="hljs-keyword">if</span> (result &amp;&amp; onFatalError) &#123;<br>            lock.lock();<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (onFatalError) &#123;<br>                    onFatalError = <span class="hljs-literal">false</span>;<br>                &#125;<br>            &#125; <span class="hljs-keyword">finally</span> &#123;<br>                lock.unlock();<br>            &#125;<br>        &#125;<br>    &#125; <span class="hljs-keyword">catch</span> (SQLException ex) &#123;<br>        <span class="hljs-keyword">throw</span> ex;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception ex) &#123;<br>        result = <span class="hljs-literal">false</span>; <span class="hljs-comment">// 在1.1.22版本中没有这句，因此升级之前没有抛出异常</span><br>        error = ex;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (!result) &#123;<br>        <span class="hljs-type">SQLException</span> <span class="hljs-variable">sqlError</span> <span class="hljs-operator">=</span> error != <span class="hljs-literal">null</span> ? <span class="hljs-comment">//</span><br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">SQLException</span>(<span class="hljs-string">&quot;validateConnection false&quot;</span>, error) <span class="hljs-comment">//</span><br>            : <span class="hljs-keyword">new</span> <span class="hljs-title class_">SQLException</span>(<span class="hljs-string">&quot;validateConnection false&quot;</span>);<br>        <span class="hljs-keyword">throw</span> sqlError; <span class="hljs-comment">// 抛出异常</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>对比升级前后两个版本可以看出，1.2.15版本对于非SQLException异常也向上抛出，而在旧的1.1.22版本对于非SQLException的异常没有抛出（从实现逻辑推测应该是实现上的bug）。</p>
+<p>因此，<strong>虽然是升级连接池版本后出现的异常，但异常实际是由驱动程序抛出，连接池只是将异常进行向上传递。</strong></p>
+<h2 id="4-2-继续跟踪驱动程序抛出NullPointerException的原因"><a href="#4-2-继续跟踪驱动程序抛出NullPointerException的原因" class="headerlink" title="4.2 继续跟踪驱动程序抛出NullPointerException的原因"></a>4.2 继续跟踪驱动程序抛出NullPointerException的原因</h2><p>跟踪异常堆栈中与驱动程序相关的部分</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.StatementImpl<span class="hljs-variable">$CancelTask</span>.&lt;init&gt;(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">95</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.xx.jar:?]</span><br>at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span><span class="hljs-selector-class">.StatementImpl</span><span class="hljs-selector-class">.executeQuery</span>(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1546</span>) ~<span class="hljs-selector-attr">[mysql-connector-java-5.1.xx.jar:?]</span><br></code></pre></td></tr></table></figure>
+
+<p>首先看<code>com.mysql.jdbc.StatementImpl.CancelTask</code>构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java">CancelTask(StatementImpl cancellee) <span class="hljs-keyword">throws</span> SQLException &#123;<br>    connectionId = cancellee.connectionId;<br>    origHost = connection.getHost();<br>    toCancel = cancellee;<br>    origConnProps = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Properties</span>();<br><br>    <span class="hljs-type">Properties</span> <span class="hljs-variable">props</span> <span class="hljs-operator">=</span> StatementImpl.<span class="hljs-built_in">this</span>.connection.getProperties(); <span class="hljs-comment">// 此处connection.getProperties()返回了null</span><br><br>    Enumeration&lt;?&gt; keys = props.propertyNames(); <span class="hljs-comment">// 导致此处抛出NPE异常</span><br><br>    <span class="hljs-keyword">while</span> (keys.hasMoreElements()) &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> keys.nextElement().toString();<br>        origConnProps.setProperty(key, props.getProperty(key));<br>    &#125;<br><br>    origConnURL = connection.getURL();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出是由于所使用的Connection实现类<code>com.mysql.fabric.jdbc.FabricMySQLConnectionProxy</code>的<code>getProperties()</code>方法返回null导致了异常。</p>
+<p>继续看<code>com.mysql.jdbc.StatementImpl#executeQuery</code>中进行<code>CancelTask</code>实例构造的相关代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (locallyScopedConn.getEnableQueryTimeouts() &amp;&amp; <span class="hljs-comment">// 这个连接配置项的默认值为true</span><br>        <span class="hljs-built_in">this</span>.timeoutInMillis != <span class="hljs-number">0</span><br>        &amp;&amp; locallyScopedConn.versionMeetsMinimum(<span class="hljs-number">5</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)) &#123;<br>    timeoutTask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CancelTask</span>(<span class="hljs-built_in">this</span>); <span class="hljs-comment">// 该方法中产生NPE异常</span><br>    locallyScopedConn.getCancelTimer().schedule(timeoutTask,<br>                                                <span class="hljs-built_in">this</span>.timeoutInMillis);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出，<strong>当启用了请求超时并且配置了超时时间，会构造并调度<code>CancelTask</code>实例，在构造<code>CancelTask</code>实例时，需要用到连接对象的<code>getProperties()</code>方法，由于<code>FabricMySQLConnectionProxy</code>类对于该方法的实现是直接返回null，因此触发了NPE</strong>。</p>
+<p>结合<code>CancelTask</code>的<code>run()</code>方法中也可以看出，这是驱动层面对请求超时功能的实现：另起定时任务，在请求达到超时时间后，另起一个连接，kill掉之前的请求，则之前的查询请求会异常返回。</p>
+<p>综上可以总结在驱动层面触发该异常的原因：<strong>使用Fabric连接方式执行带有超时设置的查询</strong>。</p>
+<p>结论验证：调用驱动程序构造Fabric方式的连接并执行带有超时设置的查询。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>    Class.forName(<span class="hljs-string">&quot;com.mysql.fabric.jdbc.FabricMySQLDriver&quot;</span>);<br>    <span class="hljs-type">Connection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> DriverManager.getConnection(<span class="hljs-string">&quot;jdbc:mysql:fabric://&quot;</span>, <span class="hljs-string">&quot;username&quot;</span>, <span class="hljs-string">&quot;password&quot;</span>); <span class="hljs-comment">// enableQueryTimeouts配置默认开启</span><br>    <span class="hljs-type">Statement</span> <span class="hljs-variable">statement</span> <span class="hljs-operator">=</span> connection.createStatement();<br>    statement.setQueryTimeout(<span class="hljs-number">10</span>);<br>    statement.executeQuery(<span class="hljs-string">&quot;select 1&quot;</span>); <span class="hljs-comment">// 应在此处抛出异常</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>异常复现</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus">Exception <span class="hljs-keyword">in</span> thread <span class="hljs-string">&quot;main&quot;</span> java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.NullPointerException</span><br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.StatementImpl<span class="hljs-variable">$CancelTask</span>.&lt;init&gt;(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">95</span>)<br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span><span class="hljs-selector-class">.StatementImpl</span><span class="hljs-selector-class">.executeQuery</span>(StatementImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">1546</span>)<br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke0</span>(Native Method)<br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.NativeMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(NativeMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">62</span>)<br>	at sun<span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.DelegatingMethodAccessorImpl</span><span class="hljs-selector-class">.invoke</span>(DelegatingMethodAccessorImpl<span class="hljs-selector-class">.java</span>:<span class="hljs-number">43</span>)<br>	at java<span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.reflect</span><span class="hljs-selector-class">.Method</span><span class="hljs-selector-class">.invoke</span>(Method<span class="hljs-selector-class">.java</span>:<span class="hljs-number">498</span>)<br>	at com<span class="hljs-selector-class">.mysql</span><span class="hljs-selector-class">.jdbc</span>.LoadBalancingConnectionProxy<span class="hljs-variable">$ConnectionErrorFiringInvocationHandler</span><span class="hljs-selector-class">.invoke</span>(LoadBalancingConnectionProxy<span class="hljs-selector-class">.java</span>:<span class="hljs-number">107</span>)<br>	at com<span class="hljs-selector-class">.sun</span><span class="hljs-selector-class">.proxy</span>.<span class="hljs-variable">$Proxy21</span><span class="hljs-selector-class">.executeQuery</span>(Unknown Source)<br>	at <span class="hljs-selector-tag">main</span>(Test<span class="hljs-selector-class">.java</span>:<span class="hljs-number">21</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-3-结合连接池和驱动程序确定异常发生的原因"><a href="#4-3-结合连接池和驱动程序确定异常发生的原因" class="headerlink" title="4.3 结合连接池和驱动程序确定异常发生的原因"></a>4.3 结合连接池和驱动程序确定异常发生的原因</h2><p>上面分别从连接池和驱动程序两个层面分析了异常的产生原因：</p>
+<ol>
+<li>驱动程序层面：使用Fabric连接方式执行带有超时设置的查询导致抛出异常</li>
+<li>连接池层面：无特殊处理逻辑，仅是将驱动程序抛出的异常向上传递</li>
+</ol>
+<p>要最终确定结论，还需要将两者结合，即<strong>连接池和驱动程序的交互逻辑</strong>。</p>
+<p>回到连接池<code>MySqlValidConnectionChecker.isValidConnection</code>方法，可以看出连接可用性检测的实现正是使用了驱动程序的queryTimeout功能，因此触发了NPE。</p>
+<p>总结异常的发生原因：<strong>Druid连接池在对连接进行可用性检测时，使用了驱动程序的queryTimeout功能，由于Fabric连接的实现类未支持超时相关的能力，因此抛出异常。</strong></p>
+<p>异常复现：根据上述结论可知，只需要配置连接池的可用性检测能力，即可触发异常</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;validationQuery&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;SELECT 1&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;validationQueryTimeout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3000</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>手动构造异常场景如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>    <span class="hljs-type">Properties</span> <span class="hljs-variable">properties</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Properties</span>();<br>    properties.put(<span class="hljs-string">&quot;url&quot;</span>, <span class="hljs-string">&quot;jdbc:mysql:fabric://&quot;</span>);<br>    properties.put(<span class="hljs-string">&quot;username&quot;</span>, <span class="hljs-string">&quot;username&quot;</span>);<br>    properties.put(<span class="hljs-string">&quot;password&quot;</span>, <span class="hljs-string">&quot;password&quot;</span>);<br>    properties.put(<span class="hljs-string">&quot;driverClassName&quot;</span>, <span class="hljs-string">&quot;com.mysql.fabric.jdbc.FabricMySQLDriver&quot;</span>);<br><br>    properties.put(<span class="hljs-string">&quot;validationQuery&quot;</span>, <span class="hljs-string">&quot;SELECT 1&quot;</span>);<br>    properties.put(<span class="hljs-string">&quot;validationQueryTimeout&quot;</span>, <span class="hljs-string">&quot;3000&quot;</span>);<br><br>    <span class="hljs-type">DruidDataSource</span> <span class="hljs-variable">dataSource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DruidDataSource</span>();<br>    DruidDataSourceFactory.config(dataSource, properties);<br><br>    dataSource.getConnection();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="5-解决方案"><a href="#5-解决方案" class="headerlink" title="5 解决方案"></a>5 解决方案</h1><p>遵循异常排查的方向，也从两个方向考虑解决方案：</p>
+<ol>
+<li>修改驱动程序</li>
+<li>连接池配置变更</li>
+</ol>
+<h2 id="5-1-修改驱动程序"><a href="#5-1-修改驱动程序" class="headerlink" title="5.1 修改驱动程序"></a>5.1 修改驱动程序</h2><p>跟踪官方版本，直到官方支持的最新5.1.49版本，都没有解决该问题。在官方论坛发帖，官方回复已不再支持5.1版本的驱动程序更新。</p>
+<h2 id="5-2-连接池配置变更"><a href="#5-2-连接池配置变更" class="headerlink" title="5.2 连接池配置变更"></a>5.2 连接池配置变更</h2><p>回顾问题产生的原因，在驱动程序中执行超时时间≠0的查询时会出现问题，查询语句和超时时间分别对应连接池的<code>validationQuery</code>和<code>validationQueryTimeout</code>配置，即当同时配置连接池的<code>validationQuery</code>查询语句和<code>validationQueryTimeout</code>&gt;0时会引发异常。因此只需要任意破坏一个条件即可。</p>
+<p>一个直观的解决方案是配置<code>validationQueryTimeout</code>&#x3D;0即可。从实际执行流程看，可用性检测的sql语句一般都配置的比较简单，因此不会在执行时间上花费很长的时间，更常见的情况是MySQL服务异常导致连接不可用，而此时异步线程也无法连接上MySQL服务。因此该方案可行。</p>
+<p>关于<code>validationQuery</code>配置的修改方案，通过查看<code>com.mysql.jdbc.StatementImpl#executeQuery</code>方法中的相关代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (sql.charAt(<span class="hljs-number">0</span>) == <span class="hljs-string">&#x27;/&#x27;</span>) &#123;<br>   <span class="hljs-keyword">if</span> (sql.startsWith(PING_MARKER)) &#123; <span class="hljs-comment">// PING_MARKER = &quot;/* ping */&quot;</span><br>      doPingInstead();<br>   <br>      <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.results;<br>   &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到以<code>/* ping */</code>开头的查询会被转换为特殊实现的ping方法。</p>
+<p>配置<code>validationQuery=/* ping */ SELECT 1</code>并进行测试，<code>doPingInstead()</code>中会向Fabric连接实现类中的封装的<code>ReplicationConnection</code>进行可用性检测，不会发生异常。</p>
+<h1 id="6-为什么使用Tomcat连接池不会出现异常"><a href="#6-为什么使用Tomcat连接池不会出现异常" class="headerlink" title="6 为什么使用Tomcat连接池不会出现异常"></a>6 为什么使用Tomcat连接池不会出现异常</h1><p>通过变更配置的方式解决了该问题后，自然的想到了，其他连接池是怎么处理。由于目前项目中主要使用的是Druid和Tomcat两种连接池，因此仅探究Tomcat连接池在连接可用性检测方面的相关实现。</p>
+<p>连接池根据<code>testOnBorrow</code>，<code>testOnReture</code>，<code>testWhileIdle</code>的配置，在对应场景执行连接可用性检测。</p>
+<p>连接可用性检测相关逻辑在<code>org.apache.tomcat.jdbc.pool.PooledConnection#validate(int, java.lang.String)</code>中，可以看到当连接不可用时该方法会返回false。因此要继续看上层的处理逻辑。</p>
+<h2 id="6-1-testOnBorrow场景"><a href="#6-1-testOnBorrow场景" class="headerlink" title="6.1 testOnBorrow场景"></a>6.1 testOnBorrow场景</h2><p>该场景下对连接的可用性检测由<code>org.apache.tomcat.jdbc.pool.DataSourceProxy#getConnection()</code>触发进入<code>org.apache.tomcat.jdbc.pool.ConnectionPool#borrowConnection(int, java.lang.String, java.lang.String)</code>中。时序图如下：</p>
+<p><img src="/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2MySQL%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8FFabric%E8%BF%9E%E6%8E%A5NullPointerException%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/Tomcat%E8%BF%9E%E6%8E%A5%E6%B1%A0%E6%A3%80%E5%87%BA%E6%A3%80%E6%B5%8BborrowConnection%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png" srcset="/img/loading.gif" lazyload alt="Tomcat连接池检出检测borrowConnection方法时序图"></p>
+<p>在1.1中，首先验证连接可用性（失败并返回false），尝试重新连接并再次进行可用性检测（再次失败并返回false），最终抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//validation failed.</span><br><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SQLException</span>(<span class="hljs-string">&quot;Failed to validate a newly established connection.&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>在1.2中，由于1.1抛出了异常，因此会尝试重新建立一个连接(1.2.1)，并再次验证连接可用性(1.2.2)，但此时的可用性验证是连接创建场景，因此使用的是initSQL配置或<code>connection.isValid()</code>方法，由于未配置initSQL参数且Fabric未实现该方法，因此1.2.2成功返回，继而该连接能够成功返回。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">con.validate(PooledConnection.VALIDATE_INIT) <span class="hljs-comment">// 不同VALIDATE模式的验证逻辑可能不同</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-2-testWhileIdle场景"><a href="#6-2-testWhileIdle场景" class="headerlink" title="6.2 testWhileIdle场景"></a>6.2 testWhileIdle场景</h2><p>testWhileIdle场景由<code>org.apache.tomcat.jdbc.pool.ConnectionPool.PoolCleaner#run</code>定时线程触发执行<code>org.apache.tomcat.jdbc.pool.ConnectionPool#testAllIdle</code>对连接池中的空闲线程进行检测，时序图如下：</p>
+<p><img src="/Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2MySQL%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8FFabric%E8%BF%9E%E6%8E%A5NullPointerException%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/Tomcat%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%A9%BA%E9%97%B2%E6%A3%80%E6%B5%8BtestAllIdle%E6%96%B9%E6%B3%95%E6%97%B6%E5%BA%8F%E5%9B%BE.png" srcset="/img/loading.gif" lazyload alt="Tomcat连接池空闲检测testAllIdle方法时序图"></p>
+<p>1.1中调用的检测方法依然是<code>org.apache.tomcat.jdbc.pool.PooledConnection#validate(int, java.lang.String)</code>，因此检测结果依然是false。对于检测为不可用的连接，则触发1.2和1.3对连接进行释放。</p>
+<p>这就导致了当触发定时检测时，所有未使用中的连接都会被抛弃。虽然对功能无影响，但频繁的释放和创建连接对性能有一定影响。</p>
+<h2 id="6-3-testOnReturn场景"><a href="#6-3-testOnReturn场景" class="headerlink" title="6.3 testOnReturn场景"></a>6.3 testOnReturn场景</h2><p>使用场景不多，但易得，调用的检测方法也是相同的，并且也会对连接进行抛弃。最后导致每个连接都只能被使用一次就销毁。</p>
+<h1 id="7-引申：是否可以在驱动程序层面解决这个问题"><a href="#7-引申：是否可以在驱动程序层面解决这个问题" class="headerlink" title="7 引申：是否可以在驱动程序层面解决这个问题"></a>7 引申：是否可以在驱动程序层面解决这个问题</h1><p>根据前面的分析可以看出，该问题<strong>最直接的原因在于Fabric连接未实现超时机制需要调用的相关方法</strong>，因此如果想在驱动程序层面解决该问题，最直接的想法就是对Fabric实现类中的对应方法进行实现。</p>
+<h2 id="7-1-修改Fabric连接类支持超时机制"><a href="#7-1-修改Fabric连接类支持超时机制" class="headerlink" title="7.1 修改Fabric连接类支持超时机制"></a>7.1 修改Fabric连接类支持超时机制</h2><p>可以从<code>CancelTask</code>类的相关方法看到，超时机制的实现思路就是在构建时记录下<code>Connection</code>对象和<code>Connection</code>的连接快照信息，在发生超时后根据这些信息在相应的服务器上执行<code>kill query</code>指令。</p>
+<p>查看代码可以看到在执行中可能需要调用<code>Connection</code>对象的<code>realClose()</code>、<code>duplicate()</code>、<code>getURL()</code>、<code>getProperties()</code>来。</p>
+<p>考虑<code>getURL()</code>、<code>getProperties()</code>等快照信息获取方法在不同使用场景下的实现要求：</p>
+<ol>
+<li>在超时机制使用场景下，这些方法应该要能够明确的指示出当前实际的连接信息。</li>
+<li>在通用场景下，这些方法应该能够指示出当前Fabric连接对象的生成信息。</li>
+</ol>
+<p>也就是说这些方法在实现上受限于特定场景和通用场景的矛盾。因此使用该方案支持超时机制不是很合适。</p>
+<h2 id="7-2-修改超时机制的实现方式"><a href="#7-2-修改超时机制的实现方式" class="headerlink" title="7.2 修改超时机制的实现方式"></a>7.2 修改超时机制的实现方式</h2><p>由于当前流程执行不通，因此考虑在上级流程中进行修改。</p>
+<p>例如，可以把生成<code>CancelTask</code>实例的职责委托给具体的<code>Connection</code>类，则Fabric连接实现类可以构建自己的<code>CancelTask</code>子类来实现超时机制处理方案。</p>
+<h1 id="8-总结"><a href="#8-总结" class="headerlink" title="8 总结"></a>8 总结</h1><p>本文从源码层面分析了一个由Druid连接池版本升级暴露出的5.1版本MySQL驱动程序NullPointerException的产生原因。并基于异常的产生原因和驱动程序发展现状，采用连接池配置变更的方式解决该问题，并在理论上讨论了驱动程序源码修改的解决方案。</p>
+<p>分层是目前程序设计的最基本思想。因此在出现问题时，也可以以各层为边界进行排查；同样的，在解决问题时，也可以以各层为单位寻求合适的解决方案。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL-Connector-J/" class="category-chain-item">MySQL Connector/J</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/">#Java</a>
+      
+        <a href="/tags/Druid/">#Druid</a>
+      
+        <a href="/tags/MySQL-Connector-J/">#MySQL Connector/J</a>
+      
+        <a href="/tags/%E8%BF%9E%E6%8E%A5%E6%B1%A0/">#连接池</a>
+      
+        <a href="/tags/%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F/">#驱动程序</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/%E4%BD%BF%E7%94%A8hexo%E5%9C%A8github%E4%B8%8A%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" title="使用hexo在github上搭建个人博客">
+                        <span class="hidden-mobile">使用hexo在github上搭建个人博客</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.4.17/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"MHgmoVUR27FPckAoBKRtAiMv-9Nh9j0Va","appKey":"2qNXhw9sfXRlUYpktcoctw7S","path":"window.location.pathname","placeholder":"","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="MySQL Connector/J"
+        id="heading-f6c1d933900354626d5f732d53f0b451" role="tab" data-toggle="collapse" href="#collapse-f6c1d933900354626d5f732d53f0b451"
+        aria-expanded="true"
+      >
+        MySQL Connector/J
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f6c1d933900354626d5f732d53f0b451"
+           role="tabpanel" aria-labelledby="heading-f6c1d933900354626d5f732d53f0b451">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%9A%84%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B%E6%9A%B4%E9%9C%B2mysql%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8Ffabric%E8%BF%9E%E6%8E%A5nullpointerexception%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/" title="Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Druid连接池的可用性检测能力暴露MySQL驱动程序Fabric连接NullPointerException问题分析</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.1/es5/tex-mml-chtml.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
